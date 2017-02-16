@@ -1,0 +1,42 @@
+{
+  "name": "timesheet-app",
+  "productName": "FBF TimeSheet App",
+  "version": "1.0.0",
+  "description": "desktop timesheet app",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test",
+    "start-client": "electron -r babel-register main.js",
+    "watch": "watchify app/index.js -t babelify -o dist/assets/bundle.js --debug --verbose",
+    "start-server": "webpack-dev-server --inline --content-base ./dist",
+    "build-main": "node -r babel-register ./node_modules/webpack/bin/webpack --progress --profile --colors",
+    "build": "npm run build-main",
+    "dev": "npm run start-server -- --start-client",
+    "cleanup": "mop -v"
+  },
+  "author": "FBF Digital Display",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^1.4.1",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-router": "^2.0.0",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1",
+    "babili-webpack-plugin": "^0.0.9",
+    "babelify": "^7.2.0",
+    "css-loader": "^0.26.1",
+    "minimist": "^1.2.0",
+    "express": "^4.14.0",
+    "cross-env": "^3.1.4"
+  },
+  "devDependencies": {
+    "babel-core": "^6.5.1",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-polyfill": "^6.22.0",
+    "babel-register": "^6.22.0",
+    "node-libs-browser": "^1.0.0"
+  }
+}
