@@ -14,21 +14,14 @@
     "dev": "npm run start-server -- --start-client",
     "cleanup": "mop -v"
   },
-  "author": "FBF Digital Display",
+  "author": "llin",
   "license": "MIT",
   "dependencies": {
     "electron": "^1.4.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-router": "^2.0.0",
-    "webpack": "^1.12.13",
-    "webpack-dev-server": "^1.14.1",
-    "babili-webpack-plugin": "^0.0.9",
-    "babelify": "^7.2.0",
-    "css-loader": "^0.26.1",
-    "minimist": "^1.2.0",
-    "express": "^4.14.0",
-    "cross-env": "^3.1.4"
+    "css-loader": "^0.26.1"
   },
   "devDependencies": {
     "babel-core": "^6.5.1",
@@ -37,6 +30,14 @@
     "babel-preset-react": "^6.5.0",
     "babel-polyfill": "^6.22.0",
     "babel-register": "^6.22.0",
-    "node-libs-browser": "^1.0.0"
+    "http-server": "^0.8.5",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1",
+    "babelify": "^7.2.0",
+    "babili-webpack-plugin": "^0.0.9",
+    "node-libs-browser": "^1.0.0",
+    "minimist": "^1.2.0",
+    "express": "^4.14.0",
+    "cross-env": "^3.1.4"
   }
 }
