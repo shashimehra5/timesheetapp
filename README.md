@@ -1,5 +1,5 @@
 ### timesheetapp
-a desktop app built in Eletron, React, React Router, &amp; Webpack
+a desktop app built in Eletron, React, React Router, material-ui, &amp; Webpack
 
 ---
 
