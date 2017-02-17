@@ -20,9 +20,9 @@ function createWindow() {
     //browser window option
     const browserOptions = {
         width: 300,
-        height: 250,
+        height: 300,
         // transparent: true,
-        // frame: false,
+        frame: false,
         icon: 'dist/img/logo.png'
     };
 
@@ -35,7 +35,7 @@ function createWindow() {
         slashes: true
     }));
 
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     // close window
     mainWindow.on('closed', function () {
