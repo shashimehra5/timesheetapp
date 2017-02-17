@@ -24,6 +24,9 @@ const styles = {
   time: {
     width: 250,
   },
+  savebtn: {
+    paddingLeft: 200,
+  },
   title: {
     textAlign: 'centre',
     cursor: 'pointer',
@@ -60,7 +63,7 @@ export default class Main extends React.Component {
           <div>
             <div style={styles.header}>
                   <AppBar title={<span style={styles.title}>Timesheet</span>}
-                    iconElementRight={<FlatButton label="Save" />}  />
+                    iconElementRight={<FlatButton label="Overview" />}  />
             </div>
             <div style={styles.container}>
                     <div>
@@ -68,7 +71,6 @@ export default class Main extends React.Component {
                     </div>
                     <TextField hintText="Job Number/Name"/>
                     <br />
-                    {/*<RaisedButton  label="Save"  primary={true} />*/}
                 </div>
                 <div>
                   <div style={styles.sheetTitle}>
@@ -84,6 +86,10 @@ export default class Main extends React.Component {
                       <MenuItem value={6} primaryText="3" />
                       <MenuItem value={7} primaryText="7.5" />
                   </DropDownMenu>
+                  </div>
+
+                  <div style={styles.savebtn}>
+                    <RaisedButton  label="Save"  primary={true} />
                   </div>
                 </div>
             </div>

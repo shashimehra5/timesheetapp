@@ -1,5 +1,7 @@
 'use strict'
 const electron = require('electron');
+const Positioner = require('electron-positioner')
+
 
 // module to control application
 const app = electron.app;
@@ -9,8 +11,10 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path')
 const url = require('url')
 
+
 // global reference of the window object
 let mainWindow;
+let positioner;
 
 /**
  * create window 
@@ -19,14 +23,15 @@ function createWindow() {
 
     //browser window option
     const browserOptions = {
-        width: 300,
-        height: 320,
+        width: 320,
+        height: 350,
         // transparent: true,
         frame: false,
         icon: 'dist/img/logo.png'
     };
 
     mainWindow = new BrowserWindow(browserOptions);
+    
 
     // load the index.html to the app
     mainWindow.loadURL(url.format({
@@ -36,6 +41,8 @@ function createWindow() {
     }));
 
     // mainWindow.openDevTools();
+    positioner = new Positioner(mainWindow);
+    positioner.move('bottomRight');
 
     // close window
     mainWindow.on('closed', function () {
