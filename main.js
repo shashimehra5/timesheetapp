@@ -35,7 +35,7 @@ function createWindow() {
         slashes: true
     }));
 
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     // close window
     mainWindow.on('closed', function () {
