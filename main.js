@@ -20,9 +20,9 @@ function createWindow() {
     //browser window option
     const browserOptions = {
         width: 300,
-        height: 250,
+        height: 320,
         // transparent: true,
-        // frame: false,
+        frame: false,
         icon: 'dist/img/logo.png'
     };
 
