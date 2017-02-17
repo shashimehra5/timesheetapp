@@ -22,7 +22,7 @@ const styles = {
     paddingLeft: 20,
   },
   time: {
-    width: 50,
+    width: 250,
   },
   title: {
     textAlign: 'centre',
@@ -76,23 +76,13 @@ export default class Main extends React.Component {
                   </div>
                   <div style={styles.time}>
                   <DropDownMenu value={this.state.value} onChange={this.handleChange}>
-                      <MenuItem value={1} primaryText="0.25 hour" />
-                      <MenuItem value={2} primaryText="0.5 hour" />
-                      <MenuItem value={3} primaryText="0.75 hour" />
-                      <MenuItem value={4} primaryText="1 hour" />
-                      <MenuItem value={4} primaryText="1.5 hours" />
-                      <MenuItem value={5} primaryText="2 hours" />
-                      <MenuItem value={6} primaryText="2.5 hours" />
-                      <MenuItem value={7} primaryText="3 hours" />
-                      <MenuItem value={8} primaryText="3.5 hours" />
-                      <MenuItem value={9} primaryText="4 hours" />
-                      <MenuItem value={10} primaryText="4.5 hours" />
-                      <MenuItem value={11} primaryText="5 hours" />
-                      <MenuItem value={12} primaryText="5.5 hours" />
-                      <MenuItem value={13} primaryText="6 hours" />
-                      <MenuItem value={14} primaryText="6.5 hours" />
-                      <MenuItem value={15} primaryText="7 hours" />
-                      <MenuItem value={16} primaryText="7.5 hours" />
+                      <MenuItem value={1} primaryText="0.25" />
+                      <MenuItem value={2} primaryText="0.5" />
+                      <MenuItem value={3} primaryText="0.75" />
+                      <MenuItem value={4} primaryText="1" />
+                      <MenuItem value={5} primaryText="2" />
+                      <MenuItem value={6} primaryText="3" />
+                      <MenuItem value={7} primaryText="7.5" />
                   </DropDownMenu>
                   </div>
                 </div>
