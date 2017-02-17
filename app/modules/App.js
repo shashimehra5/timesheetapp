@@ -11,6 +11,12 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
+// import electron from 'electron';
+
+// const ipc = electron.ipcRenderer;
+
+let trayOn = false;
+
 const styles = {
   header: {
     textAlign: 'center',
@@ -51,9 +57,21 @@ export default class Main extends React.Component {
     super(props);
     this.state = {value: 1};
     this.handleChange = this.handleChange.bind(this);
+    this.handleMinimize = this.handleMinimize.bind(this);
   };
+  
   handleChange (event, index, value) {
       this.setState({value});
+  };
+
+  handleMinimize(e) {
+    // if (trayOn) {
+    //   trayOn = false
+    //   ipc.send('remove-tray')
+    // } else {
+    //   trayOn = true
+    //   ipc.send('put-in-tray')
+    // }
   };
 
   // handleChange={(event, index, value) => this.setState({value})};
@@ -63,7 +81,7 @@ export default class Main extends React.Component {
           <div>
             <div style={styles.header}>
                   <AppBar title={<span style={styles.title}>Timesheet</span>}
-                    iconElementRight={<FlatButton label="Overview" />}  />
+                    iconElementRight={<FlatButton id="mini" label="--" primary={true} onTouchTap={this.handleMinimize}/>}  />
             </div>
             <div style={styles.container}>
                     <div>
@@ -89,7 +107,7 @@ export default class Main extends React.Component {
                   </div>
 
                   <div style={styles.savebtn}>
-                    <RaisedButton  label="Save"  primary={true} />
+                    <RaisedButton  label="Save"  secondary={true} />
                   </div>
                 </div>
             </div>
