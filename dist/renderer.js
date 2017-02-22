@@ -1,10 +1,13 @@
 const ipc = require('electron').ipcRenderer
+const ElectronData = require('electron-data')
 
 const saveBtn = document.getElementById('saveBtn')
 // let trayOn = false
 
-saveBtn.addEventListener('tray', function (event) {
+saveBtn.addEventListener('putTray', function (event) {
   ipc.send('put-in-tray')
+  console.info("Job Number is: ", event.detail.jobName);
+  console.info("Job Time is: ", event.detail.jobTime);
 })
 
 // Tray removed from context menu on icon

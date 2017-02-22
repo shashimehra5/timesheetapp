@@ -23,6 +23,7 @@
   "dependencies": {
     "electron-prebuilt": "^0.37.2",
     "electron-positioner": "^3.0.0",
+    "electron-data": "^1.2.1",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-router": "^2.0.0",

@@ -46,35 +46,12 @@ const muiTheme = getMuiTheme({
   },
 });
 
-class JobNameField extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { errorText: '', value: props.value }
-  }
-  onChange(event) {
-    if (event.target.value == "") {
-      this.setState({ errorText: 'Empty Job Name' })
-    } else {
-      this.setState({ errorText: '' })
-    }
-  }
-  render() {
-    return (
-      <TextField hintText="Job Number/Name"
-        name="jobName"
-        errorText= {this.state.errorText}
-        onChange={this.onChange.bind(this)}
-      />
-    )
-  }
-}
-
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {jobTime:                1, 
-                  errorText:             '', 
-                  jobNameTextFieldValue: ''};
+    this.state = { jobTime: 1, 
+                          errorText: '', 
+                          jobNameTextFieldValue: ''};
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
     this.onSave = this.onSave.bind(this);
@@ -89,7 +66,7 @@ export default class Main extends React.Component {
       this.setState({ errorText: 'Empty Job Name' })
     } else {
       this.setState({ errorText: '',
-                      jobNameTextFieldValue: event.target.value })
+                               jobNameTextFieldValue: event.target.value })
     }
   };
 
@@ -100,9 +77,14 @@ export default class Main extends React.Component {
       this.setState({ errorText: '' })
 
       //dispatch a custom event to instruct electron put the main window into the tray
-      // alert('A name was submitted: ' + event.currentTarget.nodeName);
-      event.currentTarget.dispatchEvent(new Event('tray'))
-      // alert('A name was submitted: ' + this.state.jobNameTextFieldValue);
+      var trayEvent = new CustomEvent("putTray", { detail: 
+                                                                                        { 
+                                                                                              jobName: this.state.jobNameTextFieldValue,
+                                                                                              jobTime: this.state.jobTime
+                                                                                          }
+                                                                                    }
+                                                                 );
+      event.currentTarget.dispatchEvent(trayEvent)
     }
       event.preventDefault();
   }

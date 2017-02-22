@@ -7,7 +7,6 @@ const Tray = electron.Tray
 
 const Positioner = require('electron-positioner')
 
-
 // module to control application
 const app = electron.app;
 
@@ -15,7 +14,6 @@ const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path')
 const url = require('url')
-
 
 // global reference of the window object
 let mainWindow;
@@ -42,7 +40,6 @@ function createWindow() {
 
     mainWindow = new BrowserWindow(browserOptions);
     
-
     // load the index.html to the app
     mainWindow.loadURL(url.format({
         pathname: path.join(__dirname, '/dist/index.html'),
