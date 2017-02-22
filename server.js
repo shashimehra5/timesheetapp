@@ -8,7 +8,7 @@ import express from 'express'
 import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
-import { spawn } from 'child_process';
+import {spawn} from 'child_process';
 
 import config from './webpack.config';
 
@@ -35,7 +35,13 @@ const server = app.listen(PORT, 'localhost', serverError => {
   }
 
   if (argv['start-client']) {
-    spawn('npm', ['run', 'start-client'], { shell: true, env: process.env, stdio: 'inherit' })
+    spawn('npm', [
+      'run', 'start-client'
+    ], {
+        shell: true,
+        env: process.env,
+        stdio: 'inherit'
+      })
       .on('close', code => process.exit(code))
       .on('error', spawnError => console.error(spawnError));
   }

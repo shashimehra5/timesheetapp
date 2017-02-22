@@ -2,6 +2,7 @@
 const electron = require('electron');
 const ipc = electron.ipcMain
 const Menu = electron.Menu
+const MenuItem = electron.MenuItem
 const Tray = electron.Tray
 
 const Positioner = require('electron-positioner')
@@ -49,7 +50,7 @@ function createWindow() {
         slashes: true
     }));
 
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
@@ -63,6 +64,7 @@ function createWindow() {
         if(appIcon!= null) appIcon.destroy()
     });
     mainWindow.show();
+    appIcon = new Tray(iconPath)
 }
 
 /**
@@ -70,29 +72,35 @@ function createWindow() {
  */
 ipc.on('put-in-tray', function (event) {
   mainWindow.hide();
-  appIcon = new Tray(iconPath)
-  const contextMenu = Menu.buildFromTemplate([{
-    label: 'Remove',
-    click: function () {
-      event.sender.send('tray-removed')
-    }
-  }])
-  appIcon.setToolTip('Timesheet App');
-  appIcon.setContextMenu(contextMenu);
-  
-  appIcon.on('click', function() {
-      mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
-    });
-    mainWindow.on('show', function() {
-      //appIcon.setHighlightMode('always');
-    });
-    mainWindow.on('hide', function() {
-      //appIcon.setHighlightMode('never');
-    });
+
+  const contextMenu = new Menu()
+    const menuItemOne = new MenuItem({
+      label: 'Restore',
+      click: function () {
+        event.sender.send('restore-select')
+      }
+    })
+    contextMenu.append(menuItemOne)
+    const menuItemTwo = new MenuItem({
+      label: 'Remove',
+      click: function () {
+        event.sender.send('quit-select')
+      }
+    })
+    contextMenu.append(menuItemTwo)
+
+    appIcon.setToolTip('Timesheet App');
+    appIcon.setContextMenu(contextMenu);
 })
 
-ipc.on('remove-tray', function () {
-  appIcon.destroy()
+ipc.on('restore-app', function () {
+  mainWindow.show();
+  //appIcon.destroy();
+});
+
+ipc.on('quit-app', function () {
+  app.quit();
+  appIcon.destroy();
 });
 
 // app events

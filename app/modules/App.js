@@ -11,12 +11,6 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 
-// import electron from 'electron';
-
-// const ipc = electron.ipcRenderer;
-
-let trayOn = false;
-
 const styles = {
   header: {
     textAlign: 'center',
@@ -52,42 +46,83 @@ const muiTheme = getMuiTheme({
   },
 });
 
+class JobNameField extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { errorText: '', value: props.value }
+  }
+  onChange(event) {
+    if (event.target.value == "") {
+      this.setState({ errorText: 'Empty Job Name' })
+    } else {
+      this.setState({ errorText: '' })
+    }
+  }
+  render() {
+    return (
+      <TextField hintText="Job Number/Name"
+        name="jobName"
+        errorText= {this.state.errorText}
+        onChange={this.onChange.bind(this)}
+      />
+    )
+  }
+}
+
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: 1};
-    this.handleChange = this.handleChange.bind(this);
-    this.handleMinimize = this.handleMinimize.bind(this);
+    this.state = {jobTime:                1, 
+                  errorText:             '', 
+                  jobNameTextFieldValue: ''};
+    this.handleDropDownChange = this.handleDropDownChange.bind(this);
+    this.onJobNameChange = this.onJobNameChange.bind(this);
+    this.onSave = this.onSave.bind(this);
   };
   
-  handleChange (event, index, value) {
-      this.setState({value});
+  handleDropDownChange (event, index, jobTime) {
+      this.setState({jobTime: jobTime});
   };
 
-  handleMinimize(e) {
-    // if (trayOn) {
-    //   trayOn = false
-    //   ipc.send('remove-tray')
-    // } else {
-    //   trayOn = true
-    //   ipc.send('put-in-tray')
-    // }
+  onJobNameChange(event) {
+    if (event.target.value == "") {
+      this.setState({ errorText: 'Empty Job Name' })
+    } else {
+      this.setState({ errorText: '',
+                      jobNameTextFieldValue: event.target.value })
+    }
   };
 
-  // handleChange={(event, index, value) => this.setState({value})};
+  onSave(event) {
+    if(this.state.jobNameTextFieldValue == "") {
+      this.setState({ errorText: 'Empty Job Name' })
+    } else {
+      this.setState({ errorText: '' })
+
+      //dispatch a custom event to instruct electron put the main window into the tray
+      // alert('A name was submitted: ' + event.currentTarget.nodeName);
+      event.currentTarget.dispatchEvent(new Event('tray'))
+      // alert('A name was submitted: ' + this.state.jobNameTextFieldValue);
+    }
+      event.preventDefault();
+  }
+
   render() {
     return (
         <MuiThemeProvider muiTheme={muiTheme}>
           <div>
             <div style={styles.header}>
-                  <AppBar title={<span style={styles.title}>Timesheet</span>}
-                    iconElementRight={<FlatButton id="mini" label="--" primary={true} onTouchTap={this.handleMinimize}/>}  />
+                  <AppBar title={<span style={styles.title}>Timesheet</span>}  />
             </div>
             <div style={styles.container}>
                     <div>
                         <h3>Job</h3>
                     </div>
-                    <TextField hintText="Job Number/Name"/>
+                    <TextField hintText="Job Number/Name"
+                               name="jobName"
+                               value={this.state.jobNameTextFieldValue}
+                               errorText= {this.state.errorText}
+                               onChange={this.onJobNameChange.bind(this)} />
                     <br />
                 </div>
                 <div>
@@ -95,7 +130,7 @@ export default class Main extends React.Component {
                   <h3>Time</h3>
                   </div>
                   <div style={styles.time}>
-                  <DropDownMenu value={this.state.value} onChange={this.handleChange}>
+                  <DropDownMenu value={this.state.jobTime} onChange={this.handleDropDownChange}>
                       <MenuItem value={1} primaryText="0.25" />
                       <MenuItem value={2} primaryText="0.5" />
                       <MenuItem value={3} primaryText="0.75" />
@@ -107,7 +142,7 @@ export default class Main extends React.Component {
                   </div>
 
                   <div style={styles.savebtn}>
-                    <RaisedButton  label="Save"  secondary={true} />
+                    <RaisedButton id="saveBtn"  label="Save"  secondary={true} onClick={this.onSave}/>
                   </div>
                 </div>
             </div>
@@ -115,3 +150,4 @@ export default class Main extends React.Component {
     );
   }
 }
+
