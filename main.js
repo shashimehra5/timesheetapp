@@ -34,7 +34,10 @@ function createWindow() {
         height: 350,
         // transparent: true,
         frame: false,
-        skipTaskbar: true,        
+        skipTaskbar: true,
+        alwaysOnTop: true,
+        maximizable: false,
+        resizable: false,      
         icon: 'dist/img/logo.png'
     };
 
@@ -47,7 +50,7 @@ function createWindow() {
         slashes: true
     }));
 
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
