@@ -70,7 +70,7 @@ export default class Main extends React.Component {
     }
   };
 
-  onSave(event) {
+onSave(event) {
     if(this.state.jobNameTextFieldValue == "") {
       this.setState({ errorText: 'Empty Job Name' })
     } else {
@@ -84,9 +84,10 @@ export default class Main extends React.Component {
                                                                                           }
                                                                                     }
                                                                  );
-      event.currentTarget.dispatchEvent(trayEvent)
-    }
-      event.preventDefault();
+	event.currentTarget.dispatchEvent(trayEvent)
+}
+	this.state.jobNameTextFieldValue = "";
+	event.preventDefault();
   }
 
   render() {
@@ -102,6 +103,7 @@ export default class Main extends React.Component {
                     </div>
                     <TextField hintText="Job Number/Name"
                                name="jobName"
+							   id="jobNameField"
                                value={this.state.jobNameTextFieldValue}
                                errorText= {this.state.errorText}
                                onChange={this.onJobNameChange.bind(this)} />
