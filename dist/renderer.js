@@ -1,6 +1,6 @@
 const ipc = require('electron').ipcRenderer
+const remote = require('electron').remote
 const storage = require('electron-json-storage');
-
 const content = document.getElementById('content');
 
 storage.clear(function(error) {
@@ -19,6 +19,8 @@ content.addEventListener('putTray', function (event) {
 })
 
 content.addEventListener('onSave', onSaveButton);
+content.addEventListener('onOverview', onOverviewSelect);
+content.addEventListener('onBack', onBackMainScreen);
 
 function onSaveButton(event) {
     var curTime = event.detail.currentTime;
@@ -50,6 +52,54 @@ function onSaveButton(event) {
                 if (error) throw error;
             });
         }
+    });
+}
+
+function onOverviewSelect(event) {
+    generateList();
+}
+
+function onBackMainScreen(event) {
+    let list = document.getElementById('jobList');
+    list.removeChild(list.childNodes[0]); 
+}
+
+function generateList(){
+    storage.getAll(function(error, data) {
+        if (error) throw error;
+        // console.log(data);
+        // var tslist='<List>';
+        // for (var key in data){
+
+        //     // construct subheader
+        //     var subheader = '<Subheader inset={true}>' + key + '</Subheader>';
+        //     tslist += subheader;
+
+        //     // construct list items
+        //     var value = data[key];
+        //     for(let i=0; i<value.length; i++) {
+        //         var listItem = '<ListItem leftAvatar={<Avatar icon={<ActionAssignment />} />}  primaryText="' + 
+        //             value[i].jobName + '"secondaryText="' + value[i].jobTime + '" />';
+        //         tslist += listItem;
+        //     }
+        // }
+        // tslist += "</List>";
+
+        // native HTML tags
+        var tslist = "<div>";
+        for (var key in data){
+            var subheader = '<h2>' + key + '</h2><ul>';
+            tslist += subheader;
+            var value = data[key];
+            for(let i=0; i<value.length; i++) {
+                var listItem = '<li><h3>' + value[i].jobName + ' - ' + value[i].jobTime + '</h3></li>';
+                tslist += listItem;
+            }
+            tslist += "</ul>";
+        }
+        tslist += "</div>";
+        console.log(tslist);
+        document.getElementById('jobList').insertAdjacentHTML('afterbegin', tslist);
     });
 }
 

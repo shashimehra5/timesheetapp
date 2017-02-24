@@ -44,6 +44,7 @@ export default class Main extends React.Component {
     super(props);
     this.state = { controlledDate: null};
     this.onDateSelect = this.onDateSelect.bind(this);
+    this.onBack = this.onBack.bind(this);
   };
 
   onDateSelect(event, date) {
@@ -52,13 +53,18 @@ export default class Main extends React.Component {
     });
   };
 
+  onBack(event) {
+    var backEvent = new CustomEvent("onBack", {bubbles: true});
+	  event.currentTarget.dispatchEvent(backEvent)
+  }
+
   render() {
         return (
         <MuiThemeProvider muiTheme={muiTheme}>
             <div id="overview" style={styles.mainDiv}>
                 <div style={styles.titleDiv}>
                     <div style={styles.titleSpan}>
-                        <RaisedButton containerElement={<Link to="/" />} label="Back"/>
+                        <RaisedButton containerElement={<Link to="/" />} label="Back" onClick={this.onBack}/>
                     </div>
                     <div style={styles.titleSpan}>
                         <DatePicker hintText=" Select A Date to Display"
@@ -66,42 +72,9 @@ export default class Main extends React.Component {
                                     onChange={this.onDateSelect} />
                     </div>
                 </div>
-            <List>
-                <Subheader inset={true}>10am</Subheader>
-                <ListItem
-                  leftAvatar={<Avatar icon={<ActionAssignment />} />}
-                  primaryText="ZZFF9998"
-                  secondaryText="0.15"
-                />
-                <ListItem
-                  leftAvatar={<Avatar icon={<ActionAssignment />} />}
-                  primaryText="ZZFF9999"
-                  secondaryText="0.35"
-                />
-                <ListItem
-                  leftAvatar={<Avatar icon={<ActionAssignment />} />}
-                  primaryText="ZZFF9990"
-                  secondaryText="0.20"
-                />
-            <Subheader inset={true}>11am</Subheader>
-                <ListItem
-                  leftAvatar={<Avatar icon={<ActionAssignment />} />}
-                  primaryText="ZZFF9998"
-                  secondaryText="0.15"
-                />
-                <ListItem
-                  leftAvatar={<Avatar icon={<ActionAssignment />} />}
-                  primaryText="ZZFF9999"
-                  secondaryText="0.35"
-                />
-                <ListItem
-                  leftAvatar={<Avatar icon={<ActionAssignment />} />}
-                  primaryText="ZZFF9990"
-                  secondaryText="0.20"
-                />
-            </List>
-            
-            
+                <div id="jobList">
+                  
+                </div>
             </div>
         </MuiThemeProvider>
         )

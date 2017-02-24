@@ -57,8 +57,9 @@ export default class Main extends React.Component {
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
     this.onClose = this.onClose.bind(this);
-	this.onSave = this.onSave.bind(this);
-	this.getCurrentHour = this.getCurrentHour.bind(this);
+    this.onOverview = this.onOverview.bind(this);
+	  this.onSave = this.onSave.bind(this);
+	  this.getCurrentHour = this.getCurrentHour.bind(this);
   };
 
   getCurrentHour () {
@@ -122,6 +123,11 @@ onSave(event) {
 	event.preventDefault();
 }
 
+onOverview(event) {
+    var ovEvent = new CustomEvent("onOverview", {bubbles: true});
+	  event.currentTarget.dispatchEvent(ovEvent)
+}
+
   render() {
     return (
         <MuiThemeProvider muiTheme={muiTheme}>
@@ -129,7 +135,7 @@ onSave(event) {
             <div style={styles.header}>
                   <AppBar title={<span style={styles.title}>Timesheet</span>} 
                                        iconElementRight={<FlatButton containerElement={<Link to="/overview" />} 
-                                                                     label="Overview"/>}/>
+                                                                     label="Overview"/>} onClick={this.onOverview}/>
             </div>
             <div style={styles.container}>
                     <div>
