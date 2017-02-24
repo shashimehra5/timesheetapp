@@ -30,14 +30,14 @@ function createWindow() {
 
     //browser window option
     const browserOptions = {
-        width: 320,
-        height: 350,
+        width: 380,
+        height: 510,
         // transparent: true,
         frame: false,
         skipTaskbar: true,
         alwaysOnTop: true,
         maximizable: false,
-        resizable: false,      
+        // resizable: false,      
         icon: 'dist/img/logo.png'
     };
 
@@ -50,7 +50,7 @@ function createWindow() {
         slashes: true
     }));
 
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
@@ -64,7 +64,7 @@ function createWindow() {
         if(appIcon!= null) appIcon.destroy()
     });
     mainWindow.show();
-    appIcon = new Tray(iconPath)
+    appIcon = new Tray(iconPath);
 }
 
 /**
@@ -103,6 +103,10 @@ ipc.on('quit-app', function () {
   appIcon.destroy();
 });
 
+ipc.on('hour-tick', function () {
+  mainWindow.show();
+});
+
 // app events
 app.on('ready', createWindow);
 app.on('window-all-closed', function() {
@@ -116,3 +120,5 @@ app.on('activate', function() {
         createWindow();
     }
 });
+
+

@@ -10,6 +10,7 @@ import AppBar from 'material-ui/AppBar';
 import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
+import Divider from 'material-ui/Divider';
 
 const styles = {
   header: {
@@ -25,7 +26,7 @@ const styles = {
     width: 250,
   },
   savebtn: {
-    paddingLeft: 200,
+    paddingLeft: 150,
   },
   title: {
     textAlign: 'centre',
@@ -34,6 +35,9 @@ const styles = {
   sheetTitle: {
     paddingLeft: 21,
   },
+  btnSpan: {
+	  paddingLeft:10,
+  }
 };
 
 const muiTheme = getMuiTheme({
@@ -49,13 +53,28 @@ const muiTheme = getMuiTheme({
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { jobTime: 1, 
-                          errorText: '', 
-                          jobNameTextFieldValue: ''};
+    this.state = { jobTime: 0.15, errorText: '', jobNameTextFieldValue: '', currentHour: '9am'};
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
-    this.onSave = this.onSave.bind(this);
+    this.onClose = this.onClose.bind(this);
+	this.onSave = this.onSave.bind(this);
+	this.getCurrentHour = this.getCurrentHour.bind(this);
   };
+
+  getCurrentHour () {
+	var currentdate = new Date();
+	var hours = currentdate.getHours(); 
+	var hours = (hours+24)%24; 
+	var mid='am';
+	if(hours==0){
+	    hours=12;
+	} else if(hours>12) {
+	    hours=hours%12;
+	    mid='pm';
+	}
+	var curHour = hours + mid;
+	return curHour;
+  }
   
   handleDropDownChange (event, index, jobTime) {
       this.setState({jobTime: jobTime});
@@ -63,39 +82,54 @@ export default class Main extends React.Component {
 
   onJobNameChange(event) {
     if (event.target.value == "") {
-      this.setState({ errorText: 'Empty Job Name' })
+      
     } else {
-      this.setState({ errorText: '',
-                               jobNameTextFieldValue: event.target.value })
+      this.setState({ errorText: '', jobNameTextFieldValue: event.target.value })
     }
   };
 
-onSave(event) {
-    if(this.state.jobNameTextFieldValue == "") {
-      this.setState({ errorText: 'Empty Job Name' })
-    } else {
-      this.setState({ errorText: '' })
+onClose(event) {
+    this.setState({ errorText: '' })
 
-      //dispatch a custom event to instruct electron put the main window into the tray
-      var trayEvent = new CustomEvent("putTray", { detail: 
-                                                                                        { 
-                                                                                              jobName: this.state.jobNameTextFieldValue,
-                                                                                              jobTime: this.state.jobTime
-                                                                                          }
-                                                                                    }
-                                                                 );
+    //dispatch a custom event to instruct electron put the main window into the tray
+    var trayEvent = new CustomEvent("putTray", { detail: { 
+		  currentTime: this.getCurrentHour(),
+		  jobName: this.state.jobNameTextFieldValue, 
+		  jobTime: this.state.jobTime
+		},
+    bubbles: true
+	});
 	event.currentTarget.dispatchEvent(trayEvent)
-}
 	this.state.jobNameTextFieldValue = "";
 	event.preventDefault();
   }
 
+onSave(event) {
+	if(this.state.jobNameTextFieldValue == "") {
+      this.setState({ errorText: 'Empty Job Name' })
+	} else {
+      this.setState({ errorText: '' })
+	  var saveEvent = new CustomEvent("onSave", { detail: {
+		  currentTime: this.getCurrentHour(),
+		  jobName: this.state.jobNameTextFieldValue, 
+		  jobTime: this.state.jobTime
+		},
+    bubbles: true
+	  });
+	event.currentTarget.dispatchEvent(saveEvent)
+    }
+	this.state.jobNameTextFieldValue = "";
+	event.preventDefault();
+}
+
   render() {
     return (
         <MuiThemeProvider muiTheme={muiTheme}>
-          <div>
+          <div id="app">
             <div style={styles.header}>
-                  <AppBar title={<span style={styles.title}>Timesheet</span>}  />
+                  <AppBar title={<span style={styles.title}>Timesheet</span>} 
+                                       iconElementRight={<FlatButton containerElement={<Link to="/overview" />} 
+                                                                     label="Overview"/>}/>
             </div>
             <div style={styles.container}>
                     <div>
@@ -111,25 +145,28 @@ onSave(event) {
                 </div>
                 <div>
                   <div style={styles.sheetTitle}>
-                  <h3>Time</h3>
+                    <h3 id="timeArrange">Time @ {this.getCurrentHour()}</h3>
                   </div>
                   <div style={styles.time}>
                   <DropDownMenu value={this.state.jobTime} onChange={this.handleDropDownChange}>
-                      <MenuItem value={1} primaryText="0.25" />
-                      <MenuItem value={2} primaryText="0.5" />
-                      <MenuItem value={3} primaryText="0.75" />
-                      <MenuItem value={4} primaryText="1" />
-                      <MenuItem value={5} primaryText="2" />
-                      <MenuItem value={6} primaryText="3" />
-                      <MenuItem value={7} primaryText="7.5" />
+                      <MenuItem value={0.15} primaryText="0.15" />
+					  <MenuItem value={0.20} primaryText="0.20" />
+                      <MenuItem value={0.30} primaryText="0.30" />
+                      <MenuItem value={0.45} primaryText="0.45" />
+                      <MenuItem value={1} primaryText="1" />
                   </DropDownMenu>
                   </div>
 
-                  <div style={styles.savebtn}>
-                    <RaisedButton id="saveBtn"  label="Save"  secondary={true} onClick={this.onSave}/>
-                  </div>
-                </div>
+            <div style={styles.savebtn}>
+				  	  <span style={styles.btnSpan}>
+				  		  <RaisedButton id="saveBtn"  label="Save"  secondary={true} onClick={this.onSave}/>
+					    </span>
+					    <span style={styles.btnSpan}>
+                  <RaisedButton id="closeBtn"  label="Close"  secondary={true} onClick={this.onClose}/>
+					    </span>
             </div>
+          </div>
+        </div>
         </MuiThemeProvider>
     );
   }
