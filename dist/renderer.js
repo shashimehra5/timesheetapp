@@ -82,8 +82,7 @@ function onBackMainScreen(event) {
 }
 
 function generateList() {
-    storage
-        .getAll(function (error, data) {
+    storage.getAll(function (error, data) {
             if (error) 
                 throw error;
             
@@ -108,9 +107,7 @@ function generateList() {
             }
             tslist += "</div>";
             console.log(tslist);
-            document
-                .getElementById('jobList')
-                .insertAdjacentHTML('afterbegin', tslist);
+            document.getElementById('jobList').insertAdjacentHTML('afterbegin', tslist);
         });
 }
 
@@ -133,9 +130,7 @@ function callEveryHour() {
 
 function onTickHour() {
     ipc.send('hour-tick');
-    document
-        .getElementById('timeArrange')
-        .innerHTML = "Time @" + getCurrentHour();
+    document.getElementById('timeArrange').innerHTML = "Time @ " + getCurrentHour();
 }
 
 function getCurrentHour() {
@@ -159,13 +154,12 @@ function getCurrentHour() {
         premid = 'pm';
     }
 
-    var curHour = preHour + premid + ' - ' + hours + mid;
+    var curHour = preHour + premid + '-' + hours + mid;
     return curHour;
 }
 
 // Tray removed from context menu on icon
-ipc
-    .on('restore-select', function () {
+ipc.on('restore-select', function () {
         ipc.send('restore-app')
         trayOn = false
     })

@@ -71,8 +71,7 @@ function createWindow() {
 /**
  *  System Tray
  */
-ipc
-    .on('put-in-tray', function (event) {
+ipc.on('put-in-tray', function (event) {
         mainWindow.hide();
 
         const contextMenu = new Menu()

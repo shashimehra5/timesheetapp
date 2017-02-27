@@ -83,7 +83,7 @@ export default class Main extends React.Component {
 	    premid='pm';
 	}
 
-	var curHour = preHour + premid + ' - ' + hours + mid;
+	var curHour = preHour + premid + '-' + hours + mid;
 	return curHour;
   }
   
