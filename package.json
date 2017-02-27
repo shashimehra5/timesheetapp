@@ -3,15 +3,14 @@
   "productName": "FBF TimeSheet App",
   "version": "1.0.0",
   "description": "desktop timesheet app",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "test": "npm test",
     "start-client": "electron -r babel-register main.js",
     "watch": "watchify app/index.js -t babelify -o dist/assets/bundle.js --debug --verbose",
-    "start-server": "webpack-dev-server --inline --content-base ./dist",
-    "build-main": "node -r babel-register ./node_modules/webpack/bin/webpack --progress --profile --colors",
-    "build": "npm run build-main",
-    "dev": "npm run start-server -- --start-client",
+    "start": "webpack-dev-server --inline --content-base ./dist",
+    "build": "node -r babel-register ./node_modules/webpack/bin/webpack --progress --profile --colors",
+    "pack": "electron-packager . \"Timesheet App\" --out=releases --overwrite --platform=win32 --arch=ia32 --version=0.36.2 --icon=dist/img/logo.icns --ignore=README.md  --ignore=.gitignore --ignore=.gitattributes --ignore=releases --ignore=.vscode --ignore=build",
     "cleanup": "mop -v"
   },
   "repository": {

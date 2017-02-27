@@ -75,7 +75,7 @@ export default class Main extends React.Component {
 	}
   
   var premid='am';
-  var preHour = hours - 1;
+  var preHour = currentdate.getHours() - 1;
   if(preHour==0){
 	    preHour=12;
 	} else if(preHour>12) {

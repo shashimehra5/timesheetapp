@@ -1,3 +1,4 @@
+'use strict'
 const ipc = require('electron').ipcRenderer
 const remote = require('electron').remote
 const storage = require('electron-json-storage');
@@ -146,7 +147,7 @@ function getCurrentHour() {
     }
 
     var premid = 'am';
-    var preHour = hours - 1;
+    var preHour = currentdate.getHours() - 1;
     if (preHour == 0) {
         preHour = 12;
     } else if (preHour > 12) {
@@ -161,10 +162,8 @@ function getCurrentHour() {
 // Tray removed from context menu on icon
 ipc.on('restore-select', function () {
         ipc.send('restore-app')
-        trayOn = false
     })
 
 ipc.on('quit-select', function () {
     ipc.send('quit-app')
-    trayOn = false
 })

@@ -50,7 +50,7 @@ function createWindow() {
         slashes: true
     }));
 
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
@@ -66,6 +66,7 @@ function createWindow() {
     });
     mainWindow.show();
     appIcon = new Tray(iconPath);
+    console.log(app.getPath('userData'))
 }
 
 /**
@@ -78,18 +79,14 @@ ipc.on('put-in-tray', function (event) {
         const menuItemOne = new MenuItem({
             label: 'Restore',
             click: function () {
-                event
-                    .sender
-                    .send('restore-select')
+                event.sender.send('restore-select')
             }
         })
         contextMenu.append(menuItemOne)
         const menuItemTwo = new MenuItem({
             label: 'Remove',
             click: function () {
-                event
-                    .sender
-                    .send('quit-select')
+                event.sender.send('quit-select')
             }
         })
         contextMenu.append(menuItemTwo)
