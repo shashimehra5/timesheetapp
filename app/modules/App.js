@@ -73,7 +73,17 @@ export default class Main extends React.Component {
 	    hours=hours%12;
 	    mid='pm';
 	}
-	var curHour = hours + mid;
+  
+  var premid='am';
+  var preHour = hours - 1;
+  if(preHour==0){
+	    preHour=12;
+	} else if(preHour>12) {
+	    preHour=preHour%12;
+	    premid='pm';
+	}
+
+	var curHour = preHour + premid + ' - ' + hours + mid;
 	return curHour;
   }
   

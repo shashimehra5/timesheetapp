@@ -125,7 +125,7 @@ function onTickHour() {
     document.getElementById('timeArrange').innerHTML = "Time @" + getCurrentHour();
 }
 
-function getCurrentHour() {
+ function getCurrentHour () {
 	var currentdate = new Date();
 	var hours = currentdate.getHours(); 
 	var hours = (hours+24)%24; 
@@ -136,7 +136,17 @@ function getCurrentHour() {
 	    hours=hours%12;
 	    mid='pm';
 	}
-	var curHour = hours + mid;
+  
+  var premid='am';
+  var preHour = hours - 1;
+  if(preHour==0){
+	    preHour=12;
+	} else if(preHour>12) {
+	    preHour=preHour%12;
+	    premid='pm';
+	}
+
+	var curHour = preHour + premid + ' - ' + hours + mid;
 	return curHour;
 }
 
