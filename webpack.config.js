@@ -8,12 +8,12 @@ module.exports = {
   output: {
     path: './dist/assets',
     filename: 'bundle.js',
-    publicPath: 'http://localhost:8080/assets/'
+    publicPath: './assets/'
   },
 
   devServer: {
     contentBase: './dist',
-    publicPath: 'http://localhost:8080/assets/'
+    publicPath: './assets/'
   },
 
   module: {
