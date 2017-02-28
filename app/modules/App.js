@@ -124,7 +124,7 @@ onSave(event) {
       var date = new Date();
       var selyear = date.getUTCFullYear();
       var selmonth = date.getUTCMonth()+1;
-      var seldate = date.date.getUTCDate();
+      var seldate = date.getUTCDate();
       var fullyear = selyear +'-'+ selmonth+'-'+seldate;
 	    var saveEvent = new CustomEvent("onSave", { detail: {
 		    currentDate: fullyear,
