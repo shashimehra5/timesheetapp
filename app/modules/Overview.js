@@ -54,7 +54,7 @@ export default class Main extends React.Component {
     console.info("date:", date.getUTCFullYear(),date.getUTCMonth()+1,date.getUTCDate());
     var selyear = date.getUTCFullYear();
     var selmonth = date.getUTCMonth()+1;
-    var seldate = date.date.getUTCDate();
+    var seldate = date.getUTCDate();
     var fullyear = selyear +'-'+ selmonth+'-'+seldate;
     // dispatch event to renderer process that a new date has been selected
     var dateEvent = new CustomEvent("onDateSelected", {detail: {selectDate: fullyear}, bubbles: true});
