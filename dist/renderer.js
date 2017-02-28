@@ -25,46 +25,70 @@ content.addEventListener('putTray', function (event) {
 content.addEventListener('onSave', onSaveButton);
 content.addEventListener('onOverview', onOverviewSelect);
 content.addEventListener('onBack', onBackMainScreen);
+content.addEventListener('onDateSelected', onDateSelected);
 
 function onSaveButton(event) {
-    var curTime = event.detail.currentTime;
-    storage.has(curTime, function (error, hasKey) {
-        if (error) 
-            throw error;
-        if (hasKey) {
 
-            //the key already existed
-            let details = {
+    // get the current date
+    var curDate = event.detail.currentDate;
+
+    // get the current time
+    var curTime = event.detail.currentTime;
+    storage.has(curDate, function(error, hasKey) {
+        if(error) 
+            throw error;
+        if(hasKey) {
+             
+             //the key already existed
+            let jobDetails = {
                 "jobName": event.detail.jobName,
                 "jobTime": event.detail.jobTime
             };
 
-            // get the existing data and update
-            storage.get(curTime, function (error, data) {
-                if (error) 
-                    throw error;
-                data.push(details);
-                console.log("update: ", data);
-
-                // update
-                storage.set(curTime, data, function (error) {
-                    if (error) 
-                        throw error;
+             // get the existing data and update
+             storage.get(curDate, function(error, data) {
+                 if(error)
+                    throw error
+                 
+                 // check the time exsits 
+                 var isExisted = false;
+                 for(var i=0; i<data.length; i++) {
+                    
+                    // the time exsits
+                    if(data[i].curTime == curTime){
+                        data[i].jobDetails.push(jobDetails);
+                        isExisted = true;
+                        break;
                     }
-                );
-            });
+                 }
+
+                //if the time is not exsited
+                if(!isExisted){
+                    let details = {
+                        "curTime": curTime,
+                        "jobDetails" : jobDetails
+                    };
+                    data.push(details);
+                }
+             });
+
         } else {
 
             // a new entry, the key is not existed in json
-            let details = [
+            let jobDetails = [
                 {
                     "jobName": event.detail.jobName,
                     "jobTime": event.detail.jobTime
                 }
             ];
 
+            let details = [{
+                "curTime": curTime,
+                "jobDetails" : jobDetails
+            }];
+
             //save to local
-            storage.set(curTime, details, function (error) {
+            storage.set(curDate, details, function (error) {
                 if (error) 
                     throw error;
                 }
@@ -82,6 +106,11 @@ function onBackMainScreen(event) {
     list.removeChild(list.childNodes[0]);
 }
 
+function onDateSelected(event) {
+    var selectDate = event.detail.selectDate;
+    concole.info("renderer process:" + selectDate);
+}
+
 function generateList() {
     storage.getAll(function (error, data) {
             if (error) 
@@ -96,16 +125,18 @@ function generateList() {
             // value[i].jobTime + '" />';         tslist += listItem;     } } tslist +=
             // "</List>"; native HTML tags
             var tslist = "<div>";
-            for (var key in data) {
-                var subheader = '<h2>' + key + '</h2><ul>';
-                tslist += subheader;
-                var value = data[key];
-                for (let i = 0; i < value.length; i++) {
-                    var listItem = '<li><h3>' + value[i].jobName + ' - ' + value[i].jobTime + '</h3></li>';
-                    tslist += listItem;
-                }
-                tslist += "</ul>";
+            for(var i=0; i<data.length; i++){
+                var dateObj = data[i];
+                    var subheader = '<h2>' + data[i].curTime + '</h2><ul>';
+                    tslist += subheader;
+                    var value = data[i].jobDetails;
+                    for (let i = 0; i < value.length; i++) {
+                        var listItem = '<li><h3>' + value[i].jobName + ' - ' + value[i].jobTime + '</h3></li>';
+                        tslist += listItem;
+                    }
+                    tslist += "</ul>";
             }
+            
             tslist += "</div>";
             console.log(tslist);
             document.getElementById('jobList').insertAdjacentHTML('afterbegin', tslist);

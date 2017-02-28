@@ -115,15 +115,22 @@ onClose(event) {
 	event.preventDefault();
   }
 
+// save data to local
 onSave(event) {
 	if(this.state.jobNameTextFieldValue == "") {
       this.setState({ errorText: 'Empty Job Name' })
 	} else {
       this.setState({ errorText: '' })
-	  var saveEvent = new CustomEvent("onSave", { detail: {
-		  currentTime: this.getCurrentHour(),
-		  jobName: this.state.jobNameTextFieldValue, 
-		  jobTime: this.state.jobTime
+      var date = new Date();
+      var selyear = date.getUTCFullYear();
+      var selmonth = date.getUTCMonth()+1;
+      var seldate = date.date.getUTCDate();
+      var fullyear = selyear +'-'+ selmonth+'-'+seldate;
+	    var saveEvent = new CustomEvent("onSave", { detail: {
+		    currentDate: fullyear,
+        currentTime: this.getCurrentHour(),
+		    jobName: this.state.jobNameTextFieldValue, 
+		    jobTime: this.state.jobTime
 		},
     bubbles: true
 	  });
@@ -133,6 +140,7 @@ onSave(event) {
 	event.preventDefault();
 }
 
+// display overview page
 onOverview(event) {
     var ovEvent = new CustomEvent("onOverview", {bubbles: true});
 	  event.currentTarget.dispatchEvent(ovEvent)

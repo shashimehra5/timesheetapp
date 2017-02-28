@@ -42,7 +42,7 @@ const muiTheme = getMuiTheme({
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { controlledDate: null};
+    this.state = { controlledDate: Date()};
     this.onDateSelect = this.onDateSelect.bind(this);
     this.onBack = this.onBack.bind(this);
   };
@@ -51,11 +51,19 @@ export default class Main extends React.Component {
     this.setState({
       controlledDate: date,
     });
+    console.info("date:", date.getUTCFullYear(),date.getUTCMonth()+1,date.getUTCDate());
+    var selyear = date.getUTCFullYear();
+    var selmonth = date.getUTCMonth()+1;
+    var seldate = date.date.getUTCDate();
+    var fullyear = selyear +'-'+ selmonth+'-'+seldate;
+    // dispatch event to renderer process that a new date has been selected
+    var dateEvent = new CustomEvent("onDateSelected", {detail: {selectDate: fullyear}, bubbles: true});
+	event.currentTarget.dispatchEvent(backEvent)
   };
 
   onBack(event) {
     var backEvent = new CustomEvent("onBack", {bubbles: true});
-	  event.currentTarget.dispatchEvent(backEvent)
+	event.currentTarget.dispatchEvent(backEvent)
   }
 
   render() {
@@ -67,7 +75,8 @@ export default class Main extends React.Component {
                         <RaisedButton containerElement={<Link to="/" />} label="Back" onClick={this.onBack}/>
                     </div>
                     <div style={styles.titleSpan}>
-                        <DatePicker hintText=" Select A Date to Display"
+                        <DatePicker id="datePicker" 
+                                    hintText=" Select A Date to Display"
                                     value={this.state.controlledDate}
                                     onChange={this.onDateSelect} />
                     </div>
