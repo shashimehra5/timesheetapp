@@ -79,7 +79,8 @@ export default class Main extends React.Component {
                         <DatePicker id="datePicker" 
                                     hintText=" Select A Date to Display"
                                     value={this.state.controlledDate}
-                                    onChange={this.onDateSelect} />
+                                    onChange={this.onDateSelect} 
+                                    container="inline"/>
                     </div>
                 </div>
                 <div id="jobList">

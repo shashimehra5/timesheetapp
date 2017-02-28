@@ -10,7 +10,8 @@
         "watch": "watchify app/index.js -t babelify -o dist/assets/bundle.js --debug --verbose",
         "start-server": "webpack-dev-server --inline --content-base ./dist",
         "compile": "node -r babel-register ./node_modules/webpack/bin/webpack --progress --profile --colors",
-        "pack": "electron-packager . \"Timesheet App\" --out=releases --overwrite --platform=win32 --arch=ia32 --version=0.36.2 --icon=dist/img/logo.icns --ignore=README.md  --ignore=.gitignore --ignore=.gitattributes --ignore=releases --ignore=.vscode --ignore=build",
+        "pack": "npm run compile && electron-packager . \"Timesheet App\" --out=releases --overwrite  --asar=true --platform=win32 --arch=ia32 --icon=dist/img/logo.icns --version-string.ProductName=TimesheetApp --prune=true --ignore=README.md  --ignore=.gitignore --ignore=.gitattributes --ignore=releases --ignore=.vscode --ignore=build",
+        "build:win-installer":"npm run pack && node createinstaller.js",
         "cleanup": "mop -v"
     },
     "repository": {
@@ -45,6 +46,9 @@
         "webpack-dev-server": "^1.14.1",
         "babelify": "^7.2.0",
         "babili-webpack-plugin": "^0.0.9",
-        "html-webpack-plugin": "^2.24.1"
+        "html-webpack-plugin": "^2.24.1",
+        "electron-winstaller": "^2.5.2",
+        "electron-squirrel-startup": "^1.0.0",
+        "asar":"^0.13.0"
     }
 }

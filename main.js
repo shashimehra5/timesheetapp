@@ -1,5 +1,12 @@
 'use strict'
+const setupEvents = require('./setupEvent');
+if (setupEvents.handleSquirrelEvent()) {
+    return;
+ }
+
 const electron = require('electron');
+const app = electron.app;
+
 const ipc = electron.ipcMain
 const Menu = electron.Menu
 const MenuItem = electron.MenuItem
@@ -7,8 +14,7 @@ const Tray = electron.Tray
 
 const Positioner = require('electron-positioner')
 
-// module to control application
-const app = electron.app;
+
 
 //module to create native window
 const BrowserWindow = electron.BrowserWindow;
@@ -31,7 +37,7 @@ function createWindow() {
     //browser window option
     const browserOptions = {
         width: 380,
-        height: 510,
+        height: 450,
         // transparent: true,
         frame: false,
         skipTaskbar: true,
@@ -51,7 +57,7 @@ function createWindow() {
     }));
 
     // dev tools
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');

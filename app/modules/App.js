@@ -26,6 +26,7 @@ const styles = {
     width: 250,
   },
   savebtn: {
+    paddingTop: 50,
     paddingLeft: 150,
   },
   title: {
@@ -33,6 +34,7 @@ const styles = {
     cursor: 'pointer',
   },
   sheetTitle: {
+    paddingTop:30,
     paddingLeft: 21,
   },
   btnSpan: {

@@ -3,20 +3,26 @@ a desktop app built in Eletron, React, React Router, material-ui, &amp; Webpack
 
 ---
 
-build
+compile
 
 ```
-npm run build
+npm run compile
 ```
 
-start server
+start 
 
 ```
-npm run start-server
+npm run start
 ```
 
-start app
+packagaing
 
 ```
-npm run start-client
+npm run pack
+```
+
+build win installer
+
+```
+npm run build:win-installer
 ```

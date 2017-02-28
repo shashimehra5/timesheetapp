@@ -66,7 +66,7 @@ function onSaveButton(event) {
                 if(!isExisted){
                     let details = {
                         "curTime": curTime,
-                        "jobDetails" : jobDetails
+                        "jobDetails" : [jobDetails]
                     };
                     data.push(details);
                 }
