@@ -42,7 +42,7 @@ const muiTheme = getMuiTheme({
 export default class Main extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { controlledDate: Date()};
+    this.state = { controlledDate: null};
     this.onDateSelect = this.onDateSelect.bind(this);
     this.onBack = this.onBack.bind(this);
   };
@@ -58,7 +58,8 @@ export default class Main extends React.Component {
     var fullyear = selyear +'-'+ selmonth+'-'+seldate;
     // dispatch event to renderer process that a new date has been selected
     var dateEvent = new CustomEvent("onDateSelected", {detail: {selectDate: fullyear}, bubbles: true});
-	event.currentTarget.dispatchEvent(backEvent)
+    var ov = this.refs.overview;
+	ov.dispatchEvent(dateEvent)
   };
 
   onBack(event) {
@@ -69,7 +70,7 @@ export default class Main extends React.Component {
   render() {
         return (
         <MuiThemeProvider muiTheme={muiTheme}>
-            <div id="overview" style={styles.mainDiv}>
+            <div id="overview" ref="overview" style={styles.mainDiv}>
                 <div style={styles.titleDiv}>
                     <div style={styles.titleSpan}>
                         <RaisedButton containerElement={<Link to="/" />} label="Back" onClick={this.onBack}/>

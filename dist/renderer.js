@@ -70,6 +70,12 @@ function onSaveButton(event) {
                     };
                     data.push(details);
                 }
+                //save to local
+                storage.set(curDate, data, function (error) {
+                    if (error) 
+                        throw error;
+                    }
+                );
              });
 
         } else {
@@ -98,24 +104,31 @@ function onSaveButton(event) {
 }
 
 function onOverviewSelect(event) {
-    generateList();
+    var date = new Date();
+    var selyear = date.getUTCFullYear();
+    var selmonth = date.getUTCMonth()+1;
+    var seldate = date.getUTCDate();
+    var fullyear = selyear +'-'+ selmonth+'-'+seldate;
+    generateList(fullyear);
 }
 
 function onBackMainScreen(event) {
-    let list = document.getElementById('jobList');
-    list.removeChild(list.childNodes[0]);
+    //let list = document.getElementById('jobList');
+    //list.removeChild(list.childNodes[0]);
 }
 
 function onDateSelected(event) {
     var selectDate = event.detail.selectDate;
-    concole.info("renderer process:" + selectDate);
+    console.info("renderer process:" + selectDate);
+    generateList(selectDate);
 }
 
-function generateList() {
-    storage.getAll(function (error, data) {
+function generateList(fullyear) {
+    
+    storage.get(fullyear, function(error, data) {
             if (error) 
                 throw error;
-            
+            console.log("gen list: ",data);
             // console.log(data); var tslist='<List>'; for (var key in data){     //
             // construct subheader     var subheader = '<Subheader inset={true}>' + key +
             // '</Subheader>';     tslist += subheader;     // construct list items     var
@@ -127,19 +140,26 @@ function generateList() {
             var tslist = "<div>";
             for(var i=0; i<data.length; i++){
                 var dateObj = data[i];
-                    var subheader = '<h2>' + data[i].curTime + '</h2><ul>';
-                    tslist += subheader;
-                    var value = data[i].jobDetails;
-                    for (let i = 0; i < value.length; i++) {
-                        var listItem = '<li><h3>' + value[i].jobName + ' - ' + value[i].jobTime + '</h3></li>';
-                        tslist += listItem;
-                    }
-                    tslist += "</ul>";
+                console.log("dateObj: ",data[i]);
+                var subheader = '<h2>' + dateObj.curTime + '</h2><ul>';
+                tslist += subheader;
+                var value = dateObj.jobDetails;
+                for (let i = 0; i < value.length; i++) {
+                    var listItem = '<li><h3>' + value[i].jobName + ' - ' + value[i].jobTime + '</h3></li>';
+                    tslist += listItem;
+                }
+                tslist += "</ul>";
             }
             
             tslist += "</div>";
             console.log(tslist);
-            document.getElementById('jobList').insertAdjacentHTML('afterbegin', tslist);
+
+            let list = document.getElementById('jobList');
+            console.info("list: ", list);
+            if(list.childNodes.length > 0) {
+                list.removeChild(list.childNodes[0]);
+            }
+            list.insertAdjacentHTML('afterbegin', tslist);
         });
 }
 
