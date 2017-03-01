@@ -1,8 +1,8 @@
 'use strict'
-const setupEvents = require('./setupEvent');
-if (setupEvents.handleSquirrelEvent()) {
-    return;
- }
+// const setupEvents = require('./setupEvent');
+// if (setupEvents.handleSquirrelEvent()) {
+//     return;
+//  }
 
 const electron = require('electron');
 const app = electron.app;
