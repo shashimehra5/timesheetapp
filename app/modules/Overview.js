@@ -15,79 +15,86 @@ import FlatButton from 'material-ui/FlatButton';
 
 const styles = {
     mainDiv: {
-	    paddingLeft: 10,
+        paddingLeft: 10
     },
     titleSpan: {
         width: 120,
-	    paddingLeft:10,
-        paddingTop:10,
+        paddingLeft: 10,
+        paddingTop: 10
     },
     titleDiv: {
         width: 300,
-	    paddingLeft: 10,
-        paddingTop:20,
+        paddingLeft: 10,
+        paddingTop: 20
     }
 };
 
 const muiTheme = getMuiTheme({
-  palette: {
-    accent1Color: yellow600,
-    textColor: blue500,
-  },
-  appBar: {
-    height: 50,
-  },
+    palette: {
+        accent1Color: yellow600,
+        textColor: blue500
+    },
+    appBar: {
+        height: 50
+    }
 });
 
 export default class Main extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { controlledDate: null};
-    this.onDateSelect = this.onDateSelect.bind(this);
-    this.onBack = this.onBack.bind(this);
-  };
+    constructor(props) {
+        super(props);
+        this.state = {
+            controlledDate: null
+        };
+        this.onDateSelect = this.onDateSelect.bind(this);
+        this.onBack = this.onBack.bind(this);
+    };
 
-  onDateSelect(event, date) {
-    this.setState({
-      controlledDate: date,
-    });
-    console.info("date:", date.getUTCFullYear(),date.getUTCMonth()+1,date.getUTCDate());
-    var selyear = date.getUTCFullYear();
-    var selmonth = date.getUTCMonth()+1;
-    var seldate = date.getUTCDate();
-    var fullyear = selyear +'-'+ selmonth+'-'+seldate;
-    // dispatch event to renderer process that a new date has been selected
-    var dateEvent = new CustomEvent("onDateSelected", {detail: {selectDate: fullyear}, bubbles: true});
-    var ov = this.refs.overview;
-	ov.dispatchEvent(dateEvent)
-  };
+    onDateSelect(event, date) {
+        this.setState({controlledDate: date});
+        console.info("date:", date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate());
+        var selyear = date.getUTCFullYear();
+        var selmonth = date.getUTCMonth() + 1;
+        var seldate = date.getUTCDate();
+        var fullyear = selyear + '-' + selmonth + '-' + seldate;
+        // dispatch event to renderer process that a new date has been selected
+        var dateEvent = new CustomEvent("onDateSelected", {
+            detail: {
+                selectDate: fullyear
+            },
+            bubbles: true
+        });
+        var ov = this.refs.overview;
+        ov.dispatchEvent(dateEvent)
+    };
 
-  onBack(event) {
-    var backEvent = new CustomEvent("onBack", {bubbles: true});
-	event.currentTarget.dispatchEvent(backEvent)
-  }
+    onBack(event) {
+        var backEvent = new CustomEvent("onBack", {bubbles: true});
+        event.currentTarget.dispatchEvent(backEvent)
+    }
 
-  render() {
+    render() {
         return (
-        <MuiThemeProvider muiTheme={muiTheme}>
-            <div id="overview" ref="overview" style={styles.mainDiv}>
-                <div style={styles.titleDiv}>
-                    <div style={styles.titleSpan}>
-                        <RaisedButton containerElement={<Link to="/" />} label="Back" onClick={this.onBack}/>
+            <MuiThemeProvider muiTheme={muiTheme}>
+                <div id="overview" ref="overview" style={styles.mainDiv}>
+                    <div style={styles.titleDiv}>
+                        <div style={styles.titleSpan}>
+                            <RaisedButton
+                                containerElement={< Link to = "/" />}
+                                label="Back"
+                                onClick={this.onBack}/>
+                        </div>
+                        <div style={styles.titleSpan}>
+                            <DatePicker
+                                id="datePicker"
+                                hintText=" Select A Date to Display"
+                                value={this.state.controlledDate}
+                                onChange={this.onDateSelect}
+                                container="inline"/>
+                        </div>
                     </div>
-                    <div style={styles.titleSpan}>
-                        <DatePicker id="datePicker" 
-                                    hintText=" Select A Date to Display"
-                                    value={this.state.controlledDate}
-                                    onChange={this.onDateSelect} 
-                                    container="inline"/>
-                    </div>
+                    <div id="jobList"></div>
                 </div>
-                <div id="jobList">
-                  
-                </div>
-            </div>
-        </MuiThemeProvider>
+            </MuiThemeProvider>
         )
     }
 }

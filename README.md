@@ -7,7 +7,7 @@ a desktop app built in Eletron, React, React Router, material-ui, &amp; Webpack
 npm install
 ```
 
-compile
+babel compile
 
 ```
 npm run compile

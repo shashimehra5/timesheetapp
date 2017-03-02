@@ -1,6 +1,6 @@
 'use strict'
-// const setupEvents = require('./setupEvent');
-// if (setupEvents.handleSquirrelEvent()) {
+// const squirrelInstall = require('./squirrel_install');
+// if (squirrelInstall.handleSquirrelEvent()) {
 //     return;
 //  }
 
@@ -13,8 +13,6 @@ const MenuItem = electron.MenuItem
 const Tray = electron.Tray
 
 const Positioner = require('electron-positioner')
-
-
 
 //module to create native window
 const BrowserWindow = electron.BrowserWindow;
@@ -57,14 +55,14 @@ function createWindow() {
     }));
 
     // dev tools
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
 
     // close window
     mainWindow.on('closed', function() {
-        // Dereference the window object, usually you would store windows in an array if
+        // the window object, usually you would store windows in an array if
         // your app supports multi windows, this is the time when you should delete the
         // corresponding element.
         mainWindow = null

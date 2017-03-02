@@ -26,6 +26,7 @@ content.addEventListener('onSave', onSaveButton);
 content.addEventListener('onOverview', onOverviewSelect);
 content.addEventListener('onBack', onBackMainScreen);
 content.addEventListener('onDateSelected', onDateSelected);
+content.addEventListener('onSendLinda', onSendLinda);
 
 function onSaveButton(event) {
 
@@ -121,6 +122,20 @@ function onDateSelected(event) {
     var selectDate = event.detail.selectDate;
     console.info("renderer process:" + selectDate);
     generateList(selectDate);
+}
+
+/**
+ * send the selected date range timesheet to linda 
+ */
+function onSendLinda(event) {
+    var startDate = event.detail.startDate;
+    var endDate = event.detail.endDate;
+    console.info("renderer process:", startDate, endDate);
+    var body_message = 'Time Sheet\r\n\r\nFrom ' + startDate + ' to ' + endDate + ' :\r\n\r\n';
+    var email = 'liang.lin@fivebyfiveglobal.com';
+    var subject = 'Timesheet auto email';
+    var mailto_link = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body_message);
+    document.location.href = mailto_link;
 }
 
 function generateList(fullyear) {
