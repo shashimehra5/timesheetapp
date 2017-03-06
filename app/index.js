@@ -6,6 +6,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './modules/App';
 import Overview from './modules/Overview';
 import ToLinda from './modules/ToLinda';
+import 'todomvc-app-css/index.css'
 
 injectTapEventPlugin();
 
