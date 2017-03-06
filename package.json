@@ -31,8 +31,7 @@
         "react-tap-event-plugin": "^2.0.1",
         "react-date-range": "^0.9.3",
         "material-ui": "^0.17.0",
-        "css-loader": "^0.26.1",
-        "todomvc-app-css": "^2.0.6"
+        "css-loader": "^0.26.1"
     },
     "devDependencies": {
         "electron-packager": "^5.2.1",
