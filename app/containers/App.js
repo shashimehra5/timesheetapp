@@ -11,6 +11,15 @@ import TextField from 'material-ui/TextField';
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
+import Avatar from 'material-ui/Avatar';
+import List from 'material-ui/List/List';
+import ListItem from 'material-ui/List/ListItem';
+import ActionAlarm from 'material-ui/svg-icons/action/alarm';
+import ActionHistory from 'material-ui/svg-icons/action/history';
+import CommunicationContactMail from 'material-ui/svg-icons/communication/contact-mail';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import Paper from 'material-ui/Paper';
+import CircularProgress from 'material-ui/CircularProgress';
 
 const styles = {
   header: {
@@ -19,15 +28,14 @@ const styles = {
   },
   container: {
     textAlign: 'left',
-    paddingTop: 20,
     paddingLeft: 20
   },
   time: {
     width: 250
   },
   savebtn: {
-    paddingTop: 50,
-    paddingLeft: 120
+    paddingTop: 20,
+    paddingLeft: 200
   },
   title: {
     textAlign: 'centre',
@@ -37,8 +45,19 @@ const styles = {
     paddingTop: 30,
     paddingLeft: 21
   },
+  process: {
+    paddingLeft: 25
+  },
   btnSpan: {
-    paddingLeft: 10
+    paddingLeft: 25
+  },
+  list: {
+    paddingTop: 15,
+    margin: 5
+  },
+  bottomNav: {
+    paddingTop: 45,
+    paddingBottom: 0
   }
 };
 
@@ -60,7 +79,8 @@ export default class Main extends React.Component {
       errorText: '',
       jobNameTextFieldValue: '',
       currentHour: '9am',
-      curTotal: 0
+      curTotal: 0,
+      slotCompleted: 0
     };
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
@@ -161,6 +181,11 @@ export default class Main extends React.Component {
       console.log("after cur total", curTotal);
       // if the current saved total time is more than 1 hour 
       // we close the window
+
+      // set the progress circle
+      var slotCompletePerfectage = (curTotal > 1) ? 100 : curTotal * 100;
+      this.setState({slotCompleted: slotCompletePerfectage});
+
       if(curTotal >= 1) {
           var trayEvent = new CustomEvent("putTray", { bubbles: true});
           event.currentTarget.dispatchEvent(trayEvent);
@@ -186,13 +211,23 @@ export default class Main extends React.Component {
           <div style={styles.header}>
             <AppBar
               title={<span style = { styles.title }> Timesheet </span>}
-              iconElementRight={<FlatButton containerElement = { <Link to = "/overview"/>} label = "Overview" />}
-              onClick={this.onOverview}/>
+              />
           </div>
+          <List>
+              <ListItem 
+                  disabled={true}
+                  leftAvatar={
+                    <Avatar
+                      icon={<ActionAlarm />}
+                      size={30}
+                      backgroundColor={cyan500}
+                    />
+                  }
+                >
+                 <div id="timeArrange" >{this.getCurrentHour()} </div>
+              </ListItem>
+          </List>
           <div style={styles.container}>
-            <div>
-              <h3>Job</h3>
-            </div>
             <TextField
               hintText="Job Number/Name"
               name="jobName"
@@ -205,27 +240,47 @@ export default class Main extends React.Component {
             <br/>
           </div>
           <div>
-            <div style={styles.sheetTitle}>
-              <h3 id="timeArrange">Time @ {this.getCurrentHour()}</h3>
-            </div>
+            
             <div style={styles.time}>
               <DropDownMenu value={this.state.jobTime} onChange={this.handleDropDownChange}>
-                <MenuItem value={0.25} primaryText="0.25"/>
-                <MenuItem value={0.5} primaryText="0.5"/>
-                <MenuItem value={0.75} primaryText="0.75"/>
-                <MenuItem value={1} primaryText="1"/>
+                <MenuItem value={0.25} primaryText="0.25 hour"/>
+                <MenuItem value={0.5} primaryText="0.5 hour"/>
+                <MenuItem value={0.75} primaryText="0.75 hour"/>
+                <MenuItem value={1} primaryText="1 hour"/>
               </DropDownMenu>
             </div>
+          
+          <div style={styles.process}>
+            <CircularProgress
+                    mode="determinate"
+                    value={this.state.slotCompleted}
+                    size={35}
+                    thickness={5}
+                  />
+          </div>
 
             <div style={styles.savebtn}>
-              <span style={styles.btnSpan}>
-                <RaisedButton id="saveBtn" label="Save" secondary={true} onClick={this.onSave}/>
-              </span>
-              <span style={styles.btnSpan}>
-                <RaisedButton id="SendPage" secondary={true} containerElement = { <Link to = "/toLinda"/>} label = "Email Linda" />
-              </span>
-            </div>
-            
+              <RaisedButton id="saveBtn" label="Save" secondary={true} onClick={this.onSave}/>
+            </div>     
+
+          </div>
+
+          <div style={styles.bottomNav}>
+            <Paper zDepth={1}>
+              <BottomNavigation>
+                <BottomNavigationItem
+                  label="Recorded Timesheet"
+                  icon={<ActionHistory/>}
+                  containerElement = { <Link to = "/overview"/>}
+                  onTouchTap={this.onOverview}
+                />
+                <BottomNavigationItem
+                  label="Email Timesheet to Linda"
+                  icon={<CommunicationContactMail/>}
+                  containerElement = { <Link to = "/toLinda"/>}
+                />
+              </BottomNavigation>
+            </Paper>
           </div>
         </div>
       </MuiThemeProvider>

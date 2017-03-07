@@ -197,7 +197,7 @@ function callEveryHour() {
 
 function onTickHour() {
     ipc.send('hour-tick');
-    document.getElementById('timeArrange').innerHTML = "Time @ " + getCurrentHour();
+    document.getElementById('timeArrange').innerHTML = getCurrentHour();
 }
 
 function getCurrentHour() {
