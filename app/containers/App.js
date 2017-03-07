@@ -17,9 +17,15 @@ import ListItem from 'material-ui/List/ListItem';
 import ActionAlarm from 'material-ui/svg-icons/action/alarm';
 import ActionHistory from 'material-ui/svg-icons/action/history';
 import CommunicationContactMail from 'material-ui/svg-icons/communication/contact-mail';
+import NotificationPriorityHigh from 'material-ui/svg-icons/notification/priority-high';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress';
+import Badge from 'material-ui/Badge';
+import IconButton from 'material-ui/IconButton';
+import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
+import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
+import {Card, CardHeader,CardTitle, CardText} from 'material-ui/Card';
 
 const styles = {
   header: {
@@ -34,8 +40,8 @@ const styles = {
     width: 250
   },
   savebtn: {
-    paddingTop: 20,
-    paddingLeft: 200
+    paddingTop: 0,
+    paddingLeft: 220
   },
   title: {
     textAlign: 'centre',
@@ -80,7 +86,8 @@ export default class Main extends React.Component {
       jobNameTextFieldValue: '',
       currentHour: '9am',
       curTotal: 0,
-      slotCompleted: 0
+      slotCompleted: 0,
+      notificationOpen: false
     };
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
@@ -96,6 +103,8 @@ export default class Main extends React.Component {
     this.getCurrentHour = this
       .getCurrentHour
       .bind(this);
+    this.onNotificationClicked = this.onNotificationClicked.bind(this);
+    this.onNotificationClose = this.onNotificationClose.bind(this);
   };
 
   getCurrentHour() {
@@ -204,6 +213,16 @@ export default class Main extends React.Component {
     event.currentTarget.dispatchEvent(ovEvent)
   }
 
+  //notification
+  onNotificationClicked(event) {
+    this.setState({notificationOpen: true});
+  }
+
+  // notification close
+  onNotificationClose(event) {
+    this.setState({notificationOpen: false});
+  }
+
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
@@ -213,20 +232,49 @@ export default class Main extends React.Component {
               title={<span style = { styles.title }> Timesheet </span>}
               />
           </div>
-          <List>
-              <ListItem 
-                  disabled={true}
-                  leftAvatar={
-                    <Avatar
-                      icon={<ActionAlarm />}
-                      size={30}
-                      backgroundColor={cyan500}
-                    />
-                  }
+          <div style={{width: '70%', display: 'inline-block'}}>
+              <List>
+                  <ListItem 
+                      disabled={true}
+                      leftAvatar={
+                        <Avatar
+                          icon={<ActionAlarm />}
+                          size={30}
+                          backgroundColor={cyan500}
+                        />
+                      }
+                    >
+                     <div id="timeArrange" >{this.getCurrentHour()} </div>
+                  </ListItem>
+              </List>
+          </div>
+          <div style={{width: '30%', display: 'inline-block'}}>
+              <Badge
+                badgeContent={10}
+                secondary={true}
+                badgeStyle={{top: 12, right: 12}}
                 >
-                 <div id="timeArrange" >{this.getCurrentHour()} </div>
-              </ListItem>
-          </List>
+                <IconButton tooltip="Notifications" onClick={this.onNotificationClicked}>
+                  <NotificationsIcon />
+                </IconButton>
+              </Badge>
+              <Popover
+                 open={this.state.notificationOpen}
+                 anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                 targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                 onRequestClose={this.onNotificationClose}
+                 animation={PopoverAnimationVertical}
+               >
+                 <Card>
+                   <CardHeader
+                      title="Time Missed"
+                      subtitle="10 hours"
+                      avatar={<NotificationPriorityHigh/>}
+                    />
+                 </Card>
+               </Popover>
+          </div>
+          
           <div style={styles.container}>
             <TextField
               hintText="Job Number/Name"
