@@ -40,8 +40,8 @@ const styles = {
     width: 250
   },
   savebtn: {
-    paddingTop: 0,
-    paddingLeft: 220
+    paddingTop: 20,
+    paddingLeft: 20
   },
   title: {
     textAlign: 'centre',
@@ -297,18 +297,19 @@ export default class Main extends React.Component {
                 <MenuItem value={1} primaryText="1 hour"/>
               </DropDownMenu>
             </div>
-          
-          <div style={styles.process}>
-            <CircularProgress
+
+            <div style={styles.savebtn}>
+              <span style={{width: '30%', display: 'inline-block'}}>
+                 <CircularProgress
                     mode="determinate"
                     value={this.state.slotCompleted}
                     size={35}
                     thickness={5}
                   />
-          </div>
-
-            <div style={styles.savebtn}>
-              <RaisedButton id="saveBtn" label="Save" secondary={true} onClick={this.onSave}/>
+              </span>
+              <span style={{width: '70%', display: 'inline-block'}}>
+                <RaisedButton id="saveBtn" label="Save" secondary={true} onClick={this.onSave}/>
+              </span>
             </div>     
 
           </div>
