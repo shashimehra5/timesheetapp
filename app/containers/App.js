@@ -37,10 +37,11 @@ const styles = {
     paddingLeft: 20
   },
   time: {
+    paddingTop: 5,
     width: 250
   },
   savebtn: {
-    paddingTop: 20,
+    paddingTop: 10,
     paddingLeft: 20
   },
   title: {
@@ -58,11 +59,11 @@ const styles = {
     paddingLeft: 25
   },
   list: {
-    paddingTop: 15,
+    paddingTop: 10,
     margin: 5
   },
   bottomNav: {
-    paddingTop: 45,
+    paddingTop: 50,
     paddingBottom: 0
   }
 };
@@ -86,8 +87,9 @@ export default class Main extends React.Component {
       jobNameTextFieldValue: '',
       currentHour: '9am',
       curTotal: 0,
-      slotCompleted: 0,
-      notificationOpen: false
+      slotCompletedPercent: 0,
+      notificationOpen: false,
+      missedTimeSlot: []
     };
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
@@ -107,6 +109,20 @@ export default class Main extends React.Component {
     this.onNotificationClose = this.onNotificationClose.bind(this);
   };
 
+  componentDidMount() {
+    window.addEventListener('onTickHour', this.onTickHour.bind(this));
+  }
+
+  /**
+   * on tick hour event
+   */
+  onTickHour(event) {
+    console.log("received tick hour");
+  }
+
+/**
+ * get the current time in "12am-1pm" format
+ */
   getCurrentHour() {
     var currentdate = new Date();
     var hours = currentdate.getHours();
@@ -132,14 +148,23 @@ export default class Main extends React.Component {
     return curHour;
   }
 
+/**
+ * job time change handler
+ */
   handleDropDownChange(event, index, jobTime) {
     this.setState({jobTime: jobTime});
   };
 
+/**
+ * job name change handler
+ */
   onJobNameChange(event) {
     this.setState({errorText: '', jobNameTextFieldValue: event.target.value})
   };
 
+/**
+ * put the app to tray
+ */
   onClose(event) {
     this.setState({errorText: ''})
 
@@ -157,7 +182,9 @@ export default class Main extends React.Component {
     event.preventDefault();
   }
 
-  // save data to local
+  /**
+   * save data to local
+   */ 
   onSave(event) {
     if (this.state.jobNameTextFieldValue == "") {
       this.setState({errorText: 'Empty Job Name'})
@@ -179,7 +206,8 @@ export default class Main extends React.Component {
         },
         bubbles: true
       });
-      event.currentTarget.dispatchEvent(saveEvent);
+      var saveBtn = event.currentTarget;
+      saveBtn.dispatchEvent(saveEvent);
 
       // count the total time of the current hour saved
       console.log("state before cur total", this.state.curTotal);
@@ -193,12 +221,15 @@ export default class Main extends React.Component {
 
       // set the progress circle
       var slotCompletePerfectage = (curTotal > 1) ? 100 : curTotal * 100;
-      this.setState({slotCompleted: slotCompletePerfectage});
+      this.setState({slotCompletedPercent: slotCompletePerfectage});
 
       if(curTotal >= 1) {
           var trayEvent = new CustomEvent("putTray", { bubbles: true});
-          event.currentTarget.dispatchEvent(trayEvent);
-          this.setState({curTotal: 0});
+          setTimeout(function(event){  
+            saveBtn.dispatchEvent(trayEvent);
+            this.setState({curTotal: 0});
+            this.setState({slotCompletedPercent: 0});
+          }.bind(this), 500);
       }
     }
 
@@ -215,7 +246,7 @@ export default class Main extends React.Component {
 
   //notification
   onNotificationClicked(event) {
-    this.setState({notificationOpen: true});
+    this.setState({notificationOpen: true, anchorEl: event.currentTarget});
   }
 
   // notification close
@@ -232,7 +263,7 @@ export default class Main extends React.Component {
               title={<span style = { styles.title }> Timesheet </span>}
               />
           </div>
-          <div style={{width: '70%', display: 'inline-block'}}>
+          <div style={{width: '75%', display: 'inline-block'}}>
               <List>
                   <ListItem 
                       disabled={true}
@@ -248,11 +279,11 @@ export default class Main extends React.Component {
                   </ListItem>
               </List>
           </div>
-          <div style={{width: '30%', display: 'inline-block'}}>
+          <div style={{width: '25%', display: 'inline-block'}}>
               <Badge
-                badgeContent={10}
+                badgeContent={this.state.missedTimeSlot.length}
                 secondary={true}
-                badgeStyle={{top: 12, right: 12}}
+                badgeStyle={{top: 20, right: 20}}
                 >
                 <IconButton tooltip="Notifications" onClick={this.onNotificationClicked}>
                   <NotificationsIcon />
@@ -260,6 +291,7 @@ export default class Main extends React.Component {
               </Badge>
               <Popover
                  open={this.state.notificationOpen}
+                 anchorEl={this.state.anchorEl}
                  anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                  targetOrigin={{horizontal: 'left', vertical: 'top'}}
                  onRequestClose={this.onNotificationClose}
@@ -267,8 +299,8 @@ export default class Main extends React.Component {
                >
                  <Card>
                    <CardHeader
-                      title="Time Missed"
-                      subtitle="10 hours"
+                      title={(this.state.missedTimeSlot.length > 0) ? "Time Missed" : "Well Done"}
+                      subtitle={(this.state.missedTimeSlot.length > 0) ? (this.state.missedTimeSlot.length + " hours") : "Your timesheet is up-to-date."} 
                       avatar={<NotificationPriorityHigh/>}
                     />
                  </Card>
@@ -299,15 +331,16 @@ export default class Main extends React.Component {
             </div>
 
             <div style={styles.savebtn}>
-              <span style={{width: '30%', display: 'inline-block'}}>
+              <span style={{width: '70%', display: 'inline-block', paddingTop: 15}}>
                  <CircularProgress
                     mode="determinate"
-                    value={this.state.slotCompleted}
-                    size={35}
+                    value={this.state.slotCompletedPercent}
+                    size={30}
+                    color={deepOrange500}
                     thickness={5}
                   />
               </span>
-              <span style={{width: '70%', display: 'inline-block'}}>
+              <span style={{width: '30%', display: 'inline-block'}}>
                 <RaisedButton id="saveBtn" label="Save" secondary={true} onClick={this.onSave}/>
               </span>
             </div>     

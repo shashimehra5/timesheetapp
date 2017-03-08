@@ -28,6 +28,9 @@ content.addEventListener('onBack', onBackMainScreen);
 content.addEventListener('onDateSelected', onDateSelected);
 content.addEventListener('onSendLinda', onSendLinda);
 
+/**
+ * save the recorded time json data to local
+ */
 function onSaveButton(event) {
 
     // get the current date
@@ -47,10 +50,12 @@ function onSaveButton(event) {
             };
 
              // get the existing data and update
-             storage.get(curDate, function(error, data) {
+             storage.get(curDate, function(error, dataObj) {
                  if(error)
                     throw error
                  
+                 var data = dataObj.curDate;
+
                  // check the time exsits 
                  var isExisted = false;
                  for(var i=0; i<data.length; i++) {
@@ -71,8 +76,11 @@ function onSaveButton(event) {
                     };
                     data.push(details);
                 }
+
+                dataObj["curDate"] = data;
+
                 //save to local
-                storage.set(curDate, data, function (error) {
+                storage.set(curDate, dataObj, function (error) {
                     if (error) 
                         throw error;
                     }
@@ -94,8 +102,12 @@ function onSaveButton(event) {
                 "jobDetails" : jobDetails
             }];
 
+            let detail_obj = {
+                curDate : details
+            }
+
             //save to local
-            storage.set(curDate, details, function (error) {
+            storage.set(curDate, detail_obj, function (error) {
                 if (error) 
                     throw error;
                 }
@@ -143,7 +155,16 @@ function generateList(fullyear) {
     storage.get(fullyear, function(error, data) {
             if (error) 
                 throw error;
-            console.log("gen list: ",data);
+            console.log("gen list: ",data["curDate"]);
+
+            // dispatch event to overview page
+            var onGenOverviewEvent = new CustomEvent("onGenOverview", { 
+                detail: {
+                    data:  data["curDate"]
+                }, 
+                bubbles: true });
+            window.dispatchEvent(onGenOverviewEvent);
+
             // console.log(data); var tslist='<List>'; for (var key in data){     //
             // construct subheader     var subheader = '<Subheader inset={true}>' + key +
             // '</Subheader>';     tslist += subheader;     // construct list items     var
@@ -151,30 +172,32 @@ function generateList(fullyear) {
             // listItem = '<ListItem leftAvatar={<Avatar icon={<ActionAssignment />} />}
             // primaryText="' +             value[i].jobName + '"secondaryText="' +
             // value[i].jobTime + '" />';         tslist += listItem;     } } tslist +=
-            // "</List>"; native HTML tags
-            var tslist = "<div>";
-            for(var i=0; i<data.length; i++){
-                var dateObj = data[i];
-                console.log("dateObj: ",data[i]);
-                var subheader = '<h2>' + dateObj.curTime + '</h2><ul>';
-                tslist += subheader;
-                var value = dateObj.jobDetails;
-                for (let i = 0; i < value.length; i++) {
-                    var listItem = '<li><h3>' + value[i].jobName + ' - ' + value[i].jobTime + '</h3></li>';
-                    tslist += listItem;
-                }
-                tslist += "</ul>";
-            }
+            // "</List>"; 
             
-            tslist += "</div>";
-            console.log(tslist);
+            //native HTML tags
+            // var tslist = "<div>";
+            // for(var i=0; i<data.length; i++){
+            //     var dateObj = data[i];
+            //     console.log("dateObj: ",data[i]);
+            //     var subheader = '<h2>' + dateObj.curTime + '</h2><ul>';
+            //     tslist += subheader;
+            //     var value = dateObj.jobDetails;
+            //     for (let i = 0; i < value.length; i++) {
+            //         var listItem = '<li><h3>' + value[i].jobName + ' - ' + value[i].jobTime + '</h3></li>';
+            //         tslist += listItem;
+            //     }
+            //     tslist += "</ul>";
+            // }
+            
+            // tslist += "</div>";
+            // console.log(tslist);
 
-            let list = document.getElementById('jobList');
-            console.info("list: ", list);
-            if(list.childNodes.length > 0) {
-                list.removeChild(list.childNodes[0]);
-            }
-            list.insertAdjacentHTML('afterbegin', tslist);
+            // let list = document.getElementById('jobList');
+            // console.info("list: ", list);
+            // if(list.childNodes.length > 0) {
+            //     list.removeChild(list.childNodes[0]);
+            // }
+            // list.insertAdjacentHTML('afterbegin', tslist);
         });
 }
 
@@ -191,12 +214,20 @@ if (winDate.getMinutes() === 0) {
     setTimeout(callEveryHour, difference);
 }
 
+/**
+ * the timer to refresh app every hour
+ */
 function callEveryHour() {
     setInterval(onTickHour(), 1000 * 60 * 60);
 }
 
+/**
+ * tick hour
+ */
 function onTickHour() {
     ipc.send('hour-tick');
+    var onTickHourEvent = new CustomEvent("onTickHour", {bubbles: true});
+    window.dispatchEvent(onTickHourEvent);
     document.getElementById('timeArrange').innerHTML = getCurrentHour();
 }
 

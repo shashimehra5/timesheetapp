@@ -3,15 +3,15 @@ import {Link} from 'react-router'
 
 import {List, ListItem} from 'material-ui/List';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
-import Avatar from 'material-ui/Avatar';
-import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 import {blue500, yellow600} from 'material-ui/styles/colors';
 import DatePicker from 'material-ui/DatePicker';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
+import Subheader from 'material-ui/Subheader';
+import Avatar from 'material-ui/Avatar';
+import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
 const styles = {
     mainDiv: {
@@ -43,11 +43,61 @@ export default class Main extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            controlledDate: null
+            controlledDate: null,
+            listData: []
         };
         this.onDateSelect = this.onDateSelect.bind(this);
         this.onBack = this.onBack.bind(this);
     };
+
+    componentDidMount() {
+         window.addEventListener('onGenOverview', this.onGenOverview.bind(this));
+    }
+
+    onGenOverview(event) {
+         var data = event.detail.data;
+         console.log("on gen event", data);
+         this.setState({listData: data});
+    }
+
+    createListItem(jobName, jobTime) {
+        let comp =  (<ListItem leftAvatar={<Avatar icon={<ActionAssignment />} />} 
+                               primaryText={jobName}
+                               secondaryText={jobTime} />)
+        console.log("create list item", comp);
+        return comp;
+    }
+
+    createSubHeader(key) {
+        let curTime = key["curTime"];
+        var comp = <Subheader inset={true}>{curTime}</Subheader>
+        console.log("subheader", comp);
+        return comp
+    }
+
+    createSubList(value) {
+        var jobDetails = value["jobDetails"];
+        var comp = jobDetails.map(function(jobObj) {
+                        console.log("map job details: ", jobObj);
+                        this.createListItem(jobObj.jobName, jobObj.jobTime);
+                    }.bind(this));
+        console.log("gen sub list", comp);
+        return comp;
+    }
+
+    createListSection(data) {
+        console.log("create gen list:", this.state.listData);
+        if(this.state.listData.length > 0) {
+            // var comp =  this.state.listData.map(this.createSubHeader);
+            let comp =  this.state.listData.map(this.createSubList.bind(this));
+            console.log("component", comp);
+            return comp;
+        }
+    }
+
+    createList() {
+        return <List> {this.createListSection()} </List>
+    }
 
     onDateSelect(event, date) {
         this.setState({controlledDate: date});
@@ -92,7 +142,7 @@ export default class Main extends React.Component {
                                 container="inline"/>
                         </div>
                     </div>
-                    <div id="jobList"></div>
+                    <div id="jobList" ref="jobList">{this. createList()}</div>
                 </div>
             </MuiThemeProvider>
         )

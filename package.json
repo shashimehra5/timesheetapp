@@ -7,6 +7,7 @@
     "scripts": {
         "test": "npm test",
         "start": "npm run compile && electron -r babel-register main.js",
+        "start-dev": "npm run dev-compile && electron -r babel-register main.js",
         "watch": "watchify app/index.js -t babelify -o dist/assets/bundle.js --debug --verbose",
         "start-server": "webpack-dev-server --inline --content-base ./dist",
         "compile": "node -r babel-register ./node_modules/webpack/bin/webpack --config webpack.config.js --progress --profile --colors",

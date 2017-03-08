@@ -55,7 +55,7 @@ function createWindow() {
     }));
 
     // dev tools
-    // mainWindow.openDevTools();
+    mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
