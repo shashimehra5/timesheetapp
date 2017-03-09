@@ -4,6 +4,8 @@ const remote = require('electron').remote
 const storage = require('electron-json-storage');
 const content = document.getElementById('content');
 
+const office_hours = [10, 11, 12, 13, 15, 16, 17];
+
 storage.clear(function (error) {
     if (error) 
         throw error;
@@ -226,8 +228,12 @@ function callEveryHour() {
  */
 function onTickHour() {
     ipc.send('hour-tick');
-    var onTickHourEvent = new CustomEvent("onTickHour", {bubbles: true});
-    window.dispatchEvent(onTickHourEvent);
+    var currentdate = new Date();
+    var hours = currentdate.getHours();
+    if(office_hours.indexOf(hours) > -1) {
+        var onTickHourEvent = new CustomEvent("onTickHour", {bubbles: true});
+        window.dispatchEvent(onTickHourEvent);
+    }
 }
 
 // Tray removed from context menu on icon
