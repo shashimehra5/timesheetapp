@@ -1,5 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router'
+import localStorage from 'localStorage'
 
 import RaisedButton from 'material-ui/RaisedButton';
 import {deepOrange500, cyan500} from 'material-ui/styles/colors';
@@ -85,11 +86,12 @@ export default class Main extends React.Component {
       jobTime: 0.25,
       errorText: '',
       jobNameTextFieldValue: '',
-      currentHour: '9am',
+      currentHour: '',
       curTotal: 0,
       slotCompletedPercent: 0,
       notificationOpen: false,
-      missedTimeSlot: []
+      missedTimeSlot: [],
+      isUpdated: false
     };
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
@@ -109,8 +111,51 @@ export default class Main extends React.Component {
     this.onNotificationClose = this.onNotificationClose.bind(this);
   };
 
+  componentWillMount() {
+    // restore the states
+    if(localStorage.getItem('curTotal') !== null) {
+      let store_curTotal = localStorage.getItem('curTotal');
+      store_curTotal = Number(store_curTotal);
+      console.log("localStorage curTotal", store_curTotal);
+      this.setState({curTotal : store_curTotal});
+    }
+
+    if(localStorage.getItem('slotCompletedPercent') !== null) {
+      let store_slotCompletedPercent = localStorage.getItem('slotCompletedPercent');
+      store_slotCompletedPercent = parseInt(store_slotCompletedPercent);
+      console.log("localStorage store_slotCompletedPercent", store_slotCompletedPercent);
+      this.setState({slotCompletedPercent : store_slotCompletedPercent});
+    }
+
+    if(localStorage.getItem('jobNameTextFieldValue') !== null) {
+      this.setState({jobNameTextFieldValue : localStorage.getItem('jobNameTextFieldValue')});
+    }
+
+    if(localStorage.getItem('missedTimeSlot') !== null && localStorage.getItem('missedTimeSlot') !== "") {
+      var ls_missTimeSlot = localStorage.getItem('missedTimeSlot');
+      ls_missTimeSlot = ls_missTimeSlot.split(',');
+      this.setState({missedTimeSlot : ls_missTimeSlot});
+    }
+  } 
+
   componentDidMount() {
     window.addEventListener('onTickHour', this.onTickHour.bind(this));
+    
+    if(this.state.missedTimeSlot.length > 0){
+      let missedTimeSlots = this.state.missedTimeSlot;
+      if(typeof missedTimeSlots === 'string' ) missedTimeSlots = [missedTimeSlots];
+      var timeslot =  missedTimeSlots[0];
+      this.setState({currentHour: timeslot});
+    } else {
+      this.setState({currentHour: this.getCurrentHour()});
+    }
+  }
+
+  componentWillUnmount() {
+    localStorage.setItem('curTotal', this.state.curTotal);
+    localStorage.setItem('slotCompletedPercent', this.state.slotCompletedPercent);
+    localStorage.setItem('jobNameTextFieldValue', this.state.jobNameTextFieldValue);
+    localStorage.setItem('missedTimeSlot', this.state.missedTimeSlot);
   }
 
   /**
@@ -118,6 +163,19 @@ export default class Main extends React.Component {
    */
   onTickHour(event) {
     console.log("received tick hour");
+
+    // if the current time slot is not filled, we push it into the missedTime array
+    if(this.state.isUpdated) {
+       // everything updated we 
+      this.setState({currentHour: this.getCurrentHour()});
+      this.setState({isUpdated: false});
+      this.setState({curTotal: 0});
+      this.setState({slotCompletedPercent: 0});
+    } else {
+      var missedTimeArr = this.state.missedTimeSlot;
+      missedTimeArr.push(this.state.currentHour);
+      this.setState({missedTimeSlot : missedTimeArr});
+    }
   }
 
 /**
@@ -171,7 +229,7 @@ export default class Main extends React.Component {
     //dispatch a custom event to instruct electron put the main window into the tray
     var trayEvent = new CustomEvent("putTray", {
       detail: {
-        currentTime: this.getCurrentHour(),
+        // currentTime: this.getCurrentHour(),
         jobName: this.state.jobNameTextFieldValue,
         jobTime: this.state.jobTime
       },
@@ -200,7 +258,7 @@ export default class Main extends React.Component {
       var saveEvent = new CustomEvent("onSave", {
         detail: {
           currentDate: fullyear,
-          currentTime: this.getCurrentHour(),
+          currentTime: this.state.currentHour,
           jobName: this.state.jobNameTextFieldValue,
           jobTime: this.state.jobTime
         },
@@ -210,12 +268,9 @@ export default class Main extends React.Component {
       saveBtn.dispatchEvent(saveEvent);
 
       // count the total time of the current hour saved
-      console.log("state before cur total", this.state.curTotal);
-      console.log("state job time", this.state.jobTime);
       var curTotal = this.state.curTotal + this.state.jobTime;
       this.setState({curTotal: curTotal});
-      console.log("state cur total", this.state.curTotal);
-      console.log("after cur total", curTotal);
+
       // if the current saved total time is more than 1 hour 
       // we close the window
 
@@ -224,12 +279,29 @@ export default class Main extends React.Component {
       this.setState({slotCompletedPercent: slotCompletePerfectage});
 
       if(curTotal >= 1) {
-          var trayEvent = new CustomEvent("putTray", { bubbles: true});
-          setTimeout(function(event){  
-            saveBtn.dispatchEvent(trayEvent);
+
+          // check missed time slot
+          if(this.state.missedTimeSlot.length > 0){
+            let missedTimeArr = this.state.missedTimeSlot.slice();
+            missedTimeArr.shift();
+            if(missedTimeArr.length > 0) {
+              this.setState({currentHour: missedTimeArr[0]});
+            } else {
+              this.setState({currentHour: this.getCurrentHour()});
+            }
+            
+            this.setState({missedTimeSlot: missedTimeArr});
             this.setState({curTotal: 0});
             this.setState({slotCompletedPercent: 0});
-          }.bind(this), 500);
+          } else {
+            var trayEvent = new CustomEvent("putTray", { bubbles: true});
+            setTimeout(function(event){  
+              saveBtn.dispatchEvent(trayEvent);
+              this.setState({curTotal: 0});
+              this.setState({slotCompletedPercent: 0});
+              this.setState({isUpdated: true});
+            }.bind(this), 500);
+          }
       }
     }
 
@@ -275,7 +347,7 @@ export default class Main extends React.Component {
                         />
                       }
                     >
-                     <div id="timeArrange" >{this.getCurrentHour()} </div>
+                     <div id="timeArrange" >{this.state.currentHour} </div>
                   </ListItem>
               </List>
           </div>

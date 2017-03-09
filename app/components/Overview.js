@@ -98,7 +98,7 @@ export default class Main extends React.Component {
 
     createListSection(data) {
         console.log("create gen list:", this.state.listData);
-        if(this.state.listData.length > 0) {
+        if(this.state.listData != null && this.state.listData.length > 0) {
             var comp =  this.state.listData.map(this.createSubHeader.bind(this));
             // let comp =  this.state.listData.map(this.createSubList.bind(this));
             console.log("component", comp);

@@ -228,32 +228,6 @@ function onTickHour() {
     ipc.send('hour-tick');
     var onTickHourEvent = new CustomEvent("onTickHour", {bubbles: true});
     window.dispatchEvent(onTickHourEvent);
-    document.getElementById('timeArrange').innerHTML = getCurrentHour();
-}
-
-function getCurrentHour() {
-    var currentdate = new Date();
-    var hours = currentdate.getHours();
-    var hours = (hours + 24) % 24;
-    var mid = 'am';
-    if (hours == 0) {
-        hours = 12;
-    } else if (hours > 12) {
-        hours = hours % 12;
-        mid = 'pm';
-    }
-
-    var premid = 'am';
-    var preHour = currentdate.getHours() - 1;
-    if (preHour == 0) {
-        preHour = 12;
-    } else if (preHour > 12) {
-        preHour = preHour % 12;
-        premid = 'pm';
-    }
-
-    var curHour = preHour + premid + '-' + hours + mid;
-    return curHour;
 }
 
 // Tray removed from context menu on icon

@@ -32,7 +32,8 @@
         "react-tap-event-plugin": "^2.0.1",
         "react-date-range": "^0.9.3",
         "material-ui": "^0.17.0",
-        "css-loader": "^0.26.1"
+        "css-loader": "^0.26.1",
+        "localStorage": "^1.0.3"
     },
     "devDependencies": {
         "electron-packager": "^5.2.1",
