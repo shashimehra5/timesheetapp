@@ -12,7 +12,7 @@ import ToLinda from './components/ToLinda';
 
 injectTapEventPlugin();
 localStorage.clear();
-localStorage.setItem('missedTimeSlot', ["1pm-2pm","2pm-3pm"]);
+// localStorage.setItem('missedTimeSlot', ["1pm-2pm","2pm-3pm"]);
 
 ReactDOM.render((
     <Router history={hashHistory}>
