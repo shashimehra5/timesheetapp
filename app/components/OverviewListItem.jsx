@@ -11,7 +11,7 @@ let OverviewListItem = function statelessFunctionComponentClass(props) {
   return (
       <ListItem leftAvatar={<Avatar icon={<ActionAssignment />} />} 
                 primaryText={jobName}
-                secondaryText={jobTime} />
+                secondaryText={jobTime+' hour'} />
   );
 };
 

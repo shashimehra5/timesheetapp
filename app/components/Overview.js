@@ -13,6 +13,9 @@ import Subheader from 'material-ui/Subheader';
 import Avatar from 'material-ui/Avatar';
 import ActionAssignment from 'material-ui/svg-icons/action/assignment';
 
+import OverviewSubHeader from './OverviewSubHeader.jsx';
+import OverviewListItem from './OverviewListItem.jsx';
+
 const styles = {
     mainDiv: {
         paddingLeft: 10
@@ -60,27 +63,35 @@ export default class Main extends React.Component {
          this.setState({listData: data});
     }
 
-    createListItem(jobName, jobTime) {
-        let comp =  (<ListItem leftAvatar={<Avatar icon={<ActionAssignment />} />} 
-                               primaryText={jobName}
-                               secondaryText={jobTime} />)
-        console.log("create list item", comp);
+    createListItem(job) {
+        let comp = <OverviewListItem jobName={job.jobName} jobTime={job.jobTime}/>
         return comp;
     }
 
-    createSubHeader(key) {
-        let curTime = key["curTime"];
-        var comp = <Subheader inset={true}>{curTime}</Subheader>
-        console.log("subheader", comp);
-        return comp
+    createSubHeader(value) {
+        
+        //create the subheader
+        let curTime = value["curTime"];
+        let jobDetails = value["jobDetails"];
+
+        var subheader= (
+                <OverviewSubHeader curTime={curTime}/>
+        )
+
+        var jobs =  jobDetails.map(this.createListItem);
+
+        var returnComponents = [];
+        returnComponents.push(subheader);
+        returnComponents.push(jobs);
+
+        return returnComponents;
     }
 
     createSubList(value) {
         var jobDetails = value["jobDetails"];
-        var comp = jobDetails.map(function(jobObj) {
-                        console.log("map job details: ", jobObj);
-                        this.createListItem(jobObj.jobName, jobObj.jobTime);
-                    }.bind(this));
+        var comp = jobDetails.map(
+                        this.createListItem
+                    );
         console.log("gen sub list", comp);
         return comp;
     }
@@ -88,8 +99,8 @@ export default class Main extends React.Component {
     createListSection(data) {
         console.log("create gen list:", this.state.listData);
         if(this.state.listData.length > 0) {
-            // var comp =  this.state.listData.map(this.createSubHeader);
-            let comp =  this.state.listData.map(this.createSubList.bind(this));
+            var comp =  this.state.listData.map(this.createSubHeader.bind(this));
+            // let comp =  this.state.listData.map(this.createSubList.bind(this));
             console.log("component", comp);
             return comp;
         }
