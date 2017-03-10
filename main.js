@@ -1,8 +1,8 @@
 'use strict'
-// const squirrelInstall = require('./squirrel_install');
-// if (squirrelInstall.handleSquirrelEvent()) {
-//     return;
-//  }
+const squirrelInstall = require('./squirrel_install');
+if (squirrelInstall.handleSquirrelEvent()) {
+    return;
+ }
 
 const electron = require('electron');
 const app = electron.app;
@@ -55,7 +55,7 @@ function createWindow() {
     }));
 
     // dev tools
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
@@ -80,24 +80,24 @@ function createWindow() {
 ipc.on('put-in-tray', function(event) {
     mainWindow.hide();
 
-    const contextMenu = new Menu()
-    const menuItemOne = new MenuItem({
-        label: 'Restore',
-        click: function() {
-            event.sender.send('restore-select')
-        }
-    })
-    contextMenu.append(menuItemOne)
-    const menuItemTwo = new MenuItem({
-        label: 'Remove',
-        click: function() {
-            event.sender.send('quit-select')
-        }
-    })
-    contextMenu.append(menuItemTwo)
+    // const contextMenu = new Menu()
+    // const menuItemOne = new MenuItem({
+    //     label: 'Restore',
+    //     click: function() {
+    //         event.sender.send('restore-select')
+    //     }
+    // })
+    // contextMenu.append(menuItemOne)
+    // const menuItemTwo = new MenuItem({
+    //     label: 'Remove',
+    //     click: function() {
+    //         event.sender.send('quit-select')
+    //     }
+    // })
+    // contextMenu.append(menuItemTwo)
 
     appIcon.setToolTip('Timesheet App');
-    appIcon.setContextMenu(contextMenu);
+    // appIcon.setContextMenu(contextMenu);
 })
 
 ipc.on('restore-app', function() {
