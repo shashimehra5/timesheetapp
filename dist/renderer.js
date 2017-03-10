@@ -3,7 +3,7 @@ const ipc = require('electron').ipcRenderer
 const remote = require('electron').remote
 const storage = require('electron-json-storage');
 const content = document.getElementById('content');
-const email = 'liang.lin@fivebyfiveglobal.com';
+const email = 'linda.pengelly@fivebyfiveglobal.com';
 const subject = 'Timesheet auto email';
 
 const office_hours = [10, 11, 12, 13, 15, 16, 17];
@@ -340,10 +340,12 @@ function callEveryHour() {
  * tick hour
  */
 function onTickHour() {
-    ipc.send('hour-tick');
     var currentdate = new Date();
     var hours = currentdate.getHours();
+    console.log("on tick hour");
     if(office_hours.indexOf(hours) > -1) {
+        console.log("in office hour");
+        ipc.send('hour-tick');
         var onTickHourEvent = new CustomEvent("onTickHour", {bubbles: true});
         window.dispatchEvent(onTickHourEvent);
     }

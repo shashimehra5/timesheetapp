@@ -91,7 +91,7 @@ export default class Main extends React.Component {
       slotCompletedPercent: 0,
       notificationOpen: false,
       missedTimeSlot: [],
-      isUpdated: false
+      isUpdated: true
     };
     this.handleDropDownChange = this.handleDropDownChange.bind(this);
     this.onJobNameChange = this.onJobNameChange.bind(this);
@@ -173,6 +173,7 @@ export default class Main extends React.Component {
       this.setState({curTotal: 0});
       this.setState({slotCompletedPercent: 0});
     } else {
+      console.log("not updated");
       var missedTimeArr = this.state.missedTimeSlot;
       missedTimeArr.push(this.state.currentHour);
       this.setState({missedTimeSlot : missedTimeArr});
