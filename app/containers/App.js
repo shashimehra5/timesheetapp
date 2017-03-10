@@ -112,6 +112,7 @@ export default class Main extends React.Component {
   };
 
   componentWillMount() {
+    
     // restore the states
     if(localStorage.getItem('curTotal') !== null) {
       let store_curTotal = localStorage.getItem('curTotal');

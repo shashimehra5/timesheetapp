@@ -3,6 +3,8 @@ const ipc = require('electron').ipcRenderer
 const remote = require('electron').remote
 const storage = require('electron-json-storage');
 const content = document.getElementById('content');
+const email = 'liang.lin@fivebyfiveglobal.com';
+const subject = 'Timesheet auto email';
 
 const office_hours = [10, 11, 12, 13, 15, 16, 17];
 
@@ -141,15 +143,135 @@ function onDateSelected(event) {
 /**
  * send the selected date range timesheet to linda 
  */
+var body_message;   // get data from local has a time delays, we need to make this variable global                                     
 function onSendLinda(event) {
     var startDate = event.detail.startDate;
     var endDate = event.detail.endDate;
-    console.info("renderer process:", startDate, endDate);
-    var body_message = 'Time Sheet\r\n\r\nFrom ' + startDate + ' to ' + endDate + ' :\r\n\r\n';
-    var email = 'liang.lin@fivebyfiveglobal.com';
-    var subject = 'Timesheet auto email';
+    var range = genRangeDates(startDate, endDate);
+    body_message = 'Time Sheet\r\n\r\nFrom ' + startDate + ' to ' + endDate + ' :\r\n\r\n\r\n';
+    genMsgBody(range);
+
+    // there is a time delays to get the local saved data so we send the email when this loop finishes at here
+    setTimeout(waitEmailData, 650);
+}
+
+function waitEmailData(event){
     var mailto_link = 'mailto:' + email + '?subject=' + subject + '&body=' + encodeURIComponent(body_message);
     document.location.href = mailto_link;
+}
+
+function genMsgBody(range){
+
+    // the selected date range 
+    for(let i = 0; i < range.length; i++) {
+        let curDate = range[i];
+
+        // check the date is available
+        storage.has(curDate, function(error, hasKey) {
+            if(error) 
+                throw error;
+            if(hasKey) {
+                body_message += curDate + '\r\n\r\n';
+
+                // get the existing data and update
+                storage.get(curDate, function(error, dataObj) {
+                    if(error)
+                       throw error
+                    
+                    var timeSlots = dataObj.curDate;
+
+                    // looking for each time slot
+                    for(let t = 0; t < timeSlots.length; t++) {
+                        body_message += '    ' + timeSlots[t].curTime  + '\r\n\r\n';
+                        let jobs = timeSlots[t].jobDetails;
+
+                        //looking for jobs in each time slot
+                        for (let j = 0; j < jobs.length; j++) {
+                            let jobName = jobs[j].jobName;
+                            let jobTime = jobs[j].jobTime;
+                            body_message += '        ' + jobName + " - " + jobTime + ' hour' + '\r\n';
+                        }
+                        body_message += '\r\n';
+                    }
+                    body_message += '\r\n';
+                });
+            }
+        });
+    }
+}
+
+function genRangeDates(startDate, endDate) {
+
+    //contains all dates in the selected range
+    var dateRange = [];
+
+    var re = /(\d{4})\-(\d{1,2})\-(\d{1,2})/g;
+    var re2 = /(\d{4})\-(\d{1,2})\-(\d{1,2})/g;
+    var startDateArr = re.exec(startDate);
+    var endDateArr = re2.exec(endDate);
+
+    // year (mutiple years selection is not support)
+    var year = startDateArr[1];
+
+    //month
+    var startMonth = startDateArr[2];
+    var endMonth = endDateArr[2];
+
+    console.info("start/end month", startMonth, endMonth);
+
+    if(typeof startMonth === "string") { 
+        startMonth = parseInt(startMonth) + 1;
+        endMonth = parseInt(endMonth) + 1;
+    }
+
+    //day
+    var startDay = startDateArr[3];
+    var endDay = endDateArr[3];
+
+    if(typeof startDay === "string") { 
+        startDay = parseInt(startDay);
+        endDay = parseInt(endDay);
+    }
+
+    // if the selected range spreads mutiple months
+    if(endMonth > startMonth) {
+        var diff_month = endMonth - startMonth;
+        console.log("month diff", diff_month);
+
+        // the first month
+        for(let i = startDay; i <= 31; i++){
+            let loop_date = year  + "-" + startMonth + "-" + i;
+            dateRange.push(loop_date);
+            console.info("dates", loop_date);
+        }
+
+        // iterate the months in the middle
+        if(diff_month > 1) {
+            for(let i = startMonth + 1; i <= endMonth-1; i++){
+                for(let j = 1; j <= 31; j++) {
+                    let loop_date = year  + "-" + i + "-" + j;
+                    dateRange.push(loop_date);
+                }
+            }
+        }
+
+        // the end month
+        for(let i = 1; i <= endDay; i++) {
+            let loop_date = year  + "-" + endMonth + "-" + i;
+            dateRange.push(loop_date);
+            console.info("dates", loop_date);
+        }
+    } else {
+        console.log("same month", startDay, endDay);
+        // in the same month, this is much easier
+        for(let i = startDay; i <= endDay; i++) {
+            let loop_date = year  + "-" + startMonth + "-" + i;
+            dateRange.push(loop_date);
+        }
+    } 
+
+    return dateRange;
+    
 }
 
 function generateList(fullyear) {
@@ -166,15 +288,6 @@ function generateList(fullyear) {
                 }, 
                 bubbles: true });
             window.dispatchEvent(onGenOverviewEvent);
-
-            // console.log(data); var tslist='<List>'; for (var key in data){     //
-            // construct subheader     var subheader = '<Subheader inset={true}>' + key +
-            // '</Subheader>';     tslist += subheader;     // construct list items     var
-            // value = data[key];     for(let i=0; i<value.length; i++) {         var
-            // listItem = '<ListItem leftAvatar={<Avatar icon={<ActionAssignment />} />}
-            // primaryText="' +             value[i].jobName + '"secondaryText="' +
-            // value[i].jobTime + '" />';         tslist += listItem;     } } tslist +=
-            // "</List>"; 
             
             //native HTML tags
             // var tslist = "<div>";
