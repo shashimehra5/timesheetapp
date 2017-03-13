@@ -1,8 +1,8 @@
 'use strict'
-// const squirrelInstall = require('./squirrel_install');
-// if (squirrelInstall.handleSquirrelEvent()) {
-//     return;
-//  }
+const squirrelInstall = require('./squirrel_install');
+if (squirrelInstall.handleSquirrelEvent()) {
+    return;
+ }
 
 const electron = require('electron');
 const app = electron.app;
@@ -55,7 +55,7 @@ function createWindow() {
     }));
 
     // dev tools
-    mainWindow.openDevTools();
+    // mainWindow.openDevTools();
 
     positioner = new Positioner(mainWindow);
     positioner.move('bottomRight');
