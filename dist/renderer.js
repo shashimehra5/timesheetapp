@@ -316,24 +316,38 @@ function generateList(fullyear) {
         });
 }
 
-// show the window every hour
-var winDate = new Date();
-if (winDate.getMinutes() === 0) {
-    callEveryHour()
-} else {
-    winDate.setHours(winDate.getHours() + 1);
-    winDate.setMinutes(0);
-    winDate.setSeconds(0);
+ipc.on('power-resume', function(){
+    console.log('renderer power resume');
+    startTimer();
+});
 
-    let difference = winDate - new Date();
-    setTimeout(callEveryHour, difference);
+ipc.on('power-suspend', function(){
+    console.log('renderer power suspend');
+    clearTimeout(tickHourTO);
+    clearInterval(tickHourTO);
+})
+
+var tickHourTO;
+function startTimer() {
+    // show the window every hour
+    var winDate = new Date();
+    if (winDate.getMinutes() === 0) {
+        callEveryHour()
+    } else {
+        winDate.setHours(winDate.getHours() + 1);
+        winDate.setMinutes(0);
+        winDate.setSeconds(0);
+
+        let difference = winDate - new Date();
+        tickHourTO = setTimeout(callEveryHour, difference);
+    }
 }
 
 /**
  * the timer to refresh app every hour
  */
 function callEveryHour() {
-    setInterval(onTickHour(), 1000 * 60 * 60);
+    tickHourTO = setInterval(onTickHour(), 1000 * 60 * 60);
 }
 
 /**

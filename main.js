@@ -72,6 +72,19 @@ function createWindow() {
     mainWindow.show();
     appIcon = new Tray(iconPath);
     console.log(app.getPath('userData'));
+
+    // power monitor
+    // on power resume, we correct the current time out
+    electron.powerMonitor.on('resume', function() {
+        console.log('on power resume');
+         mainWindow.webContents.send('power-resume');
+    });
+
+    // on power suspend, we clear the timeout
+    electron.powerMonitor.on('suspend', function() {
+        console.log('on power suspend');
+         mainWindow.webContents.send('power-suspend');
+    });
 }
 
 /**
