@@ -114,8 +114,7 @@ function onSaveButton(event) {
             storage.set(curDate, detail_obj, function (error) {
                 if (error) 
                     throw error;
-                }
-            );
+            });
         }
     });
 }
@@ -316,34 +315,35 @@ function generateList(fullyear) {
         });
 }
 
+var tickTimer;
+
 ipc.on('power-resume', function(){
     console.log('renderer power resume');
+    while(tickTimer--) {
+        window.clearTimeout(tickTimer);
+    }
     startTimer();
 });
 
 ipc.on('power-suspend', function(){
     console.log('renderer power suspend');
-    if(tickHourTO !== null) clearTimeout(tickHourTO);
-    if(tickHourInterval !== null) clearInterval(tickHourInterval);
+    window.clearTimeout(tickTimer);
 });
 
 startTimer();
 
-var tickHourTO;
-var tickHourInterval;
 function startTimer() {
     // show the window every hour
     var winDate = new Date();
     if (winDate.getMinutes() === 0) {
-        callEveryHour()
+        callEveryHour();
     } else {
         winDate.setHours(winDate.getHours() + 1);
         winDate.setMinutes(0);
         winDate.setSeconds(0);
 
         let difference = winDate - new Date();
-        tickHourTO = setTimeout(callEveryHour, difference);
-        console.info('tickHourTO', tickHourTO);
+        tickTimer = window.setTimeout(onTickHour, difference);
     }
 }
 
@@ -351,8 +351,10 @@ function startTimer() {
  * the timer to refresh app every hour
  */
 function callEveryHour() {
-    tickHourInterval = setInterval(onTickHour(), 1000 * 60 * 60);
-    console.log('tickHourInterval', tickHourInterval);
+
+    //test every minute
+    tickTimer = window.setTimeout(onTickHour, 1000 * 60 * 60);
+    console.info('tickTimer', tickTimer);
 }
 
 /**
@@ -368,6 +370,7 @@ function onTickHour() {
         var onTickHourEvent = new CustomEvent("onTickHour", {bubbles: true});
         window.dispatchEvent(onTickHourEvent);
     }
+    tickTimer = window.setTimeout(onTickHour, 1000 * 60 * 60);
 }
 
 // Tray removed from context menu on icon
