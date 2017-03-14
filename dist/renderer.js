@@ -323,11 +323,14 @@ ipc.on('power-resume', function(){
 
 ipc.on('power-suspend', function(){
     console.log('renderer power suspend');
-    clearTimeout(tickHourTO);
-    clearInterval(tickHourTO);
-})
+    if(tickHourTO !== null) clearTimeout(tickHourTO);
+    if(tickHourInterval !== null) clearInterval(tickHourInterval);
+});
+
+startTimer();
 
 var tickHourTO;
+var tickHourInterval;
 function startTimer() {
     // show the window every hour
     var winDate = new Date();
@@ -340,6 +343,7 @@ function startTimer() {
 
         let difference = winDate - new Date();
         tickHourTO = setTimeout(callEveryHour, difference);
+        console.info('tickHourTO', tickHourTO);
     }
 }
 
@@ -347,7 +351,8 @@ function startTimer() {
  * the timer to refresh app every hour
  */
 function callEveryHour() {
-    tickHourTO = setInterval(onTickHour(), 1000 * 60 * 60);
+    tickHourInterval = setInterval(onTickHour(), 1000 * 60 * 60);
+    console.log('tickHourInterval', tickHourInterval);
 }
 
 /**
