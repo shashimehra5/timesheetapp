@@ -27,6 +27,7 @@ import IconButton from 'material-ui/IconButton';
 import NotificationsIcon from 'material-ui/svg-icons/social/notifications';
 import Popover, {PopoverAnimationVertical} from 'material-ui/Popover';
 import {Card, CardHeader,CardTitle, CardText} from 'material-ui/Card';
+import AutoComplete from 'material-ui/AutoComplete';
 
 const styles = {
   header: {
@@ -78,6 +79,8 @@ const muiTheme = getMuiTheme({
     height: 50
   }
 });
+
+const jobdata = ['UKFF', 'UKFF00', 'UKFF001', 'UKFF0016', 'UKFF0017', 'UKFF0018', 'ZZFF9999', 'ZZFF99', 'ZZFF999'];
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -218,8 +221,9 @@ export default class Main extends React.Component {
 /**
  * job name change handler
  */
-  onJobNameChange(event) {
-    this.setState({errorText: '', jobNameTextFieldValue: event.target.value})
+  onJobNameChange(searchText) {
+    // this.setState({errorText: '', jobNameTextFieldValue: event.target.value})
+    this.setState({errorText: '', jobNameTextFieldValue: searchText});
   };
 
 /**
@@ -382,15 +386,16 @@ export default class Main extends React.Component {
           </div>
           
           <div style={styles.container}>
-            <TextField
-              hintText="Job Number/Name"
-              name="jobName"
-              id="jobNameField"
-              value={this.state.jobNameTextFieldValue}
-              errorText={this.state.errorText}
-              onChange={this
-              .onJobNameChange
-              .bind(this)}/>
+
+              <AutoComplete
+                  hintText="Job Number/Name"
+                  errorText={this.state.errorText}
+                  searchText={this.state.jobNameTextFieldValue}
+                  onUpdateInput={this.onJobNameChange.bind(this)}
+                  dataSource={jobdata}
+                  filter={(searchText, key) => (key.indexOf(searchText) !== -1)}
+                  maxSearchResults={5}
+              />
             <br/>
           </div>
           <div>
