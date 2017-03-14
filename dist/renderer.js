@@ -325,7 +325,9 @@ ipc.on('power-suspend', function(){
     console.log('renderer power suspend');
     if(tickHourTO !== null) clearTimeout(tickHourTO);
     if(tickHourInterval !== null) clearInterval(tickHourInterval);
-})
+});
+
+startTimer();
 
 var tickHourTO;
 var tickHourInterval;
@@ -341,6 +343,7 @@ function startTimer() {
 
         let difference = winDate - new Date();
         tickHourTO = setTimeout(callEveryHour, difference);
+        console.info('tickHourTO', tickHourTO);
     }
 }
 
@@ -349,6 +352,7 @@ function startTimer() {
  */
 function callEveryHour() {
     tickHourInterval = setInterval(onTickHour(), 1000 * 60 * 60);
+    console.log('tickHourInterval', tickHourInterval);
 }
 
 /**

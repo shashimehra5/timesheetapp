@@ -76,13 +76,13 @@ function createWindow() {
     // power monitor
     // on power resume, we correct the current time out
     electron.powerMonitor.on('resume', function() {
-        console.log('on power resume');
+         console.log('on power resume');
          mainWindow.webContents.send('power-resume');
     });
 
     // on power suspend, we clear the timeout
     electron.powerMonitor.on('suspend', function() {
-        console.log('on power suspend');
+         console.log('on power suspend');
          mainWindow.webContents.send('power-suspend');
     });
 }
@@ -93,25 +93,25 @@ function createWindow() {
 ipc.on('put-in-tray', function(event) {
     mainWindow.hide();
 
-    // const contextMenu = new Menu()
-    // const menuItemOne = new MenuItem({
-    //     label: 'Restore',
-    //     click: function() {
-    //         event.sender.send('restore-select')
-    //     }
-    // })
-    // contextMenu.append(menuItemOne)
-    // const menuItemTwo = new MenuItem({
-    //     label: 'Remove',
-    //     click: function() {
-    //         event.sender.send('quit-select')
-    //     }
-    // })
-    // contextMenu.append(menuItemTwo)
+    const contextMenu = new Menu()
+    const menuItemOne = new MenuItem({
+        label: 'Restore',
+        click: function() {
+            event.sender.send('restore-select')
+        }
+    })
+    contextMenu.append(menuItemOne)
+    const menuItemTwo = new MenuItem({
+        label: 'Remove',
+        click: function() {
+            event.sender.send('quit-select')
+        }
+    })
+    contextMenu.append(menuItemTwo)
 
     appIcon.setToolTip('Timesheet App');
-    // appIcon.setContextMenu(contextMenu);
-})
+    appIcon.setContextMenu(contextMenu);
+});
 
 ipc.on('restore-app', function() {
     mainWindow.show();
